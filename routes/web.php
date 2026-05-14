@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Route;
 
 // 1. HALAMAN UTAMA
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('dashboard');
 });
 
 // 2. RUTE AUTHENTICATION (Sama seperti struktur proyek kemarin)

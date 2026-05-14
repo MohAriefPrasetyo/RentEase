@@ -9,12 +9,10 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    // Menampilkan halaman login & register
-    public function showLogin() { return view('auth.login'); }
-    public function showRegister() { return view('auth.register'); }
+    public function login() { return view('auth.login'); }
+    public function register() { return view('auth.register'); }
 
-    // Proses Registrasi
-    public function register(Request $request) {
+    public function store(Request $request) {
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|unique:users',
@@ -25,14 +23,12 @@ class AuthController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => 'customer', // Default pendaftar adalah customer
         ]);
 
-        return redirect()->route('login')->with('success', 'Registrasi berhasil! Silakan login.');
+        return redirect()->route('auth.login')->with('success', 'Registrasi berhasil! Silakan login.');
     }
 
-    // Proses Login
-    public function login(Request $request) {
+    public function authenticate(Request $request) {
         $credentials = $request->validate([
             'email' => 'required|email',
             'password' => 'required',
@@ -40,17 +36,16 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->intended('/')->with('success', 'Selamat datang kembali!');
+            return redirect()->route('dashboard');
         }
 
-        return back()->withErrors(['email' => 'Email atau password salah.']);
+        return back()->with('error', 'Email atau password salah.');
     }
 
-    // Proses Logout
     public function logout(Request $request) {
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect('/login');
+        return redirect()->route('auth.login');
     }
 }
