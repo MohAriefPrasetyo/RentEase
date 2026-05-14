@@ -13,12 +13,9 @@ return new class extends Migration
     {
       Schema::create('penalties', function (Blueprint $table) {
     $table->id();
-
     $table->foreignId('rental_id')->constrained();
-
     $table->text('damage_description');
     $table->integer('penalty_fee');
-
     $table->timestamps();
 });
     }

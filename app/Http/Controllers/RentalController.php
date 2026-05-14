@@ -11,32 +11,42 @@ class RentalController extends Controller
 {
     public function index()
     {
-        $rentals = Rental::with(['user', 'equipment'])->latest()->paginate(10);
-        return view('rentals.index', compact('rentals'));
+        return view('rentals.index', [
+            'rentals' => Rental::with(['user', 'equipment'])->latest()->paginate(10),
+        ]);
     }
 
     public function create()
     {
-        $equipments = Equipment::where('availability_status', 'available')->get();
-        $users = User::all();
-        return view('rentals.create', compact('equipments', 'users'));
+        return view('rentals.create', [
+            'equipments' => Equipment::where('availability_status', 'available')->get(),
+            'users'      => User::all(),
+        ]);
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'user_id' => 'required|exists:users,id',
             'equipment_id' => 'required|exists:equipments,id',
-            'rental_date' => 'required|date',
-            'return_date' => 'required|date|after_or_equal:rental_date',
-            'guarantee' => 'required|string|max:255',
+            'rental_date'  => 'required|date',
+            'return_date'  => 'required|date|after_or_equal:rental_date',
+            'guarantee'    => 'required|string|max:255',
         ]);
 
         $equipment = Equipment::findOrFail($request->equipment_id);
-        $days = \Carbon\Carbon::parse($request->rental_date)->diffInDays(\Carbon\Carbon::parse($request->return_date)) ?: 1;
-        $total = $days * $equipment->rental_price_per_day;
+        $days = \Carbon\Carbon::parse($request->rental_date)
+                    ->diffInDays(\Carbon\Carbon::parse($request->return_date)) ?: 1;
+        $totalPrice = $days * $equipment->rental_price_per_day;
 
-        Rental::create(array_merge($request->all(), ['total_price' => $total]));
+        Rental::create([
+            'user_id'      => auth()->id() ?? 1,
+            'equipment_id' => $request->equipment_id,
+            'rental_date'  => $request->rental_date,
+            'return_date'  => $request->return_date,
+            'guarantee'    => $request->guarantee,
+            'total_price'  => $totalPrice,
+        ]);
+
         $equipment->update(['availability_status' => 'rented']);
 
         return redirect()->route('rentals.index')->with('success', 'Rental berhasil dibuat.');
@@ -44,14 +54,16 @@ class RentalController extends Controller
 
     public function show(Rental $rental)
     {
-        $rental->load(['user', 'equipment', 'penalties']);
-        return view('rentals.show', compact('rental'));
+        return view('rentals.show', [
+            'rental' => $rental->load(['equipment', 'user', 'penalties']),
+        ]);
     }
 
     public function destroy(Rental $rental)
     {
         $rental->equipment->update(['availability_status' => 'available']);
         $rental->delete();
+
         return redirect()->route('rentals.index')->with('success', 'Rental berhasil dihapus.');
     }
 }
