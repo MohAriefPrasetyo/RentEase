@@ -10,31 +10,35 @@ class PenaltyController extends Controller
 {
     public function index()
     {
-        $penalties = Penalty::with(['rental.user', 'rental.equipment'])->latest()->paginate(10);
-        return view('penalties.index', compact('penalties'));
+        return view('penalties.index', [
+            'penalties' => Penalty::with(['rental.equipment', 'rental.user'])->latest()->paginate(10),
+        ]);
     }
 
     public function create()
     {
-        $rentals = Rental::with(['user', 'equipment'])->get();
-        return view('penalties.create', compact('rentals'));
+        return view('penalties.create', [
+            'rentals' => Rental::with('equipment')->get(),
+        ]);
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'rental_id' => 'required|exists:rentals,id',
+            'rental_id'          => 'required|exists:rentals,id',
             'damage_description' => 'required|string',
-            'penalty_fee' => 'required|integer|min:0',
+            'penalty_fee'        => 'required|integer|min:0',
         ]);
 
         Penalty::create($request->all());
-        return redirect()->route('penalties.index')->with('success', 'Denda berhasil ditambahkan.');
+
+        return redirect()->route('penalties.index')->with('success', 'Penalti berhasil ditambahkan.');
     }
 
     public function destroy(Penalty $penalty)
     {
         $penalty->delete();
-        return redirect()->route('penalties.index')->with('success', 'Denda berhasil dihapus.');
+
+        return redirect()->route('penalties.index')->with('success', 'Penalti berhasil dihapus.');
     }
 }
