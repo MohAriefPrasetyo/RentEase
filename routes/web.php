@@ -5,6 +5,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EquipmentController;
 use App\Http\Controllers\RentalController;
 use App\Http\Controllers\PenaltyController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 // 1. HALAMAN UTAMA
@@ -40,5 +41,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/penalties/create', [PenaltyController::class, 'create'])->name('penalties.create');
     Route::post('/penalties', [PenaltyController::class, 'store'])->name('penalties.store');
     Route::delete('/penalties/{penalty}', [PenaltyController::class, 'destroy'])->name('penalties.destroy');
+
+    Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
 
 });
