@@ -35,8 +35,10 @@
                 @forelse($rentals as $rental)
                 <tr class="hover:bg-slate-50 transition-colors">
                     <td class="px-6 py-4 text-slate-400">{{ $loop->iteration }}</td>
-                    <td class="px-6 py-4 font-medium text-slate-800">{{ $rental->user->name }}</td>
-                    <td class="px-6 py-4 text-slate-600">{{ $rental->equipment->equipment_name }}</td>
+                    <td class="px-6 py-4 font-medium text-slate-800">{{ $rental->renter_name }}</td>
+                    <td class="px-6 py-4 text-slate-600">
+                        {{ $rental->items->pluck('equipment.equipment_name')->join(', ') }}
+                    </td>
                     <td class="px-6 py-4 text-slate-500">{{ \Carbon\Carbon::parse($rental->rental_date)->format('d M Y') }}</td>
                     <td class="px-6 py-4 text-slate-500">{{ \Carbon\Carbon::parse($rental->return_date)->format('d M Y') }}</td>
                     <td class="px-6 py-4 text-slate-600">{{ $rental->guarantee }}</td>
@@ -47,6 +49,7 @@
                                class="inline-flex items-center gap-1 text-xs bg-slate-100 hover:bg-blue-100 hover:text-blue-700 text-slate-600 px-3 py-1.5 rounded-lg transition-colors font-medium">
                                 Detail
                             </a>
+                            @can('destroy-data')
                             <form action="{{ route('rentals.destroy', $rental) }}" method="POST"
                                   onsubmit="return confirm('Hapus rental ini?')">
                                 @csrf @method('DELETE')
@@ -55,6 +58,7 @@
                                     Hapus
                                 </button>
                             </form>
+                            @endcan
                         </div>
                     </td>
                 </tr>

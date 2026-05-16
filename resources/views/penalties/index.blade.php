@@ -33,8 +33,8 @@
                 @forelse($penalties as $penalty)
                 <tr class="hover:bg-slate-50 transition-colors">
                     <td class="px-6 py-4 text-slate-400">{{ $loop->iteration }}</td>
-                    <td class="px-6 py-4 font-medium text-slate-800">{{ $penalty->rental->user->name }}</td>
-                    <td class="px-6 py-4 text-slate-600">{{ $penalty->rental->equipment->equipment_name }}</td>
+                    <td class="px-6 py-4 font-medium text-slate-800">{{ $penalty->rental->renter_name }}</td>
+                    <td class="px-6 py-4 text-slate-600">{{ $penalty->rental->items->pluck('equipment.equipment_name')->join(', ') }}</td>
                     <td class="px-6 py-4 text-slate-600 max-w-xs">{{ Str::limit($penalty->damage_description, 60) }}</td>
                     <td class="px-6 py-4 text-right font-semibold text-red-600">Rp {{ number_format($penalty->penalty_fee, 0, ',', '.') }}</td>
                     <td class="px-6 py-4 text-center">

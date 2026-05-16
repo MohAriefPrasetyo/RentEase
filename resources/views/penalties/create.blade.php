@@ -17,7 +17,7 @@
                     <option value="">-- Pilih Rental --</option>
                     @foreach($rentals as $rental)
                         <option value="{{ $rental->id }}" {{ old('rental_id') == $rental->id ? 'selected' : '' }}>
-                            #{{ $rental->id }} — {{ $rental->user->name }} ({{ $rental->equipment->equipment_name }})
+                            #{{ $rental->id }} — {{ $rental->renter_name }} ({{ $rental->items->pluck('equipment.equipment_name')->join(', ') }})
                         </option>
                     @endforeach
                 </select>

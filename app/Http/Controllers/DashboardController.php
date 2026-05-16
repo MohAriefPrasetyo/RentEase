@@ -15,7 +15,7 @@ class DashboardController extends Controller
             'availableEquipment'=> Equipment::where('availability_status', 'available')->count(),
             'totalRentals'      => Rental::count(),
             'totalPenalties'    => Penalty::sum('penalty_fee'),
-            'recentRentals'     => Rental::with(['user', 'equipment'])->latest()->take(5)->get(),
+            'recentRentals'     => Rental::with(['user', 'items.equipment'])->latest()->take(5)->get(),
         ]);
     }
 }

@@ -3,65 +3,86 @@
 namespace App\Http\Controllers;
 
 use App\Models\Rental;
+use App\Models\RentalItem;
 use App\Models\Equipment;
-use App\Models\User;
 use Illuminate\Http\Request;
 
 class RentalController extends Controller
 {
     public function index()
     {
-        return view('rentals.index', [
-            'rentals' => Rental::with(['user', 'equipment'])->latest()->paginate(10),
-        ]);
+        $user = auth()->user();
+        $rentals = $user->role === 'admin'
+            ? Rental::with(['user', 'items.equipment'])->latest()->paginate(10)
+            : Rental::with(['user', 'items.equipment'])->where('user_id', $user->id)->latest()->paginate(10);
+
+        return view('rentals.index', compact('rentals'));
     }
 
     public function create()
     {
+        $this->authorize('create-rental');
         return view('rentals.create', [
             'equipments' => Equipment::where('availability_status', 'available')->get(),
-            'users'      => User::all(),
         ]);
     }
 
     public function store(Request $request)
     {
+        $this->authorize('create-rental');
+
         $request->validate([
-            'equipment_id' => 'required|exists:equipments,id',
-            'rental_date'  => 'required|date',
-            'return_date'  => 'required|date|after_or_equal:rental_date',
-            'guarantee'    => 'required|string|max:255',
+            'renter_name'    => 'required|string|max:255',
+            'rental_date'    => 'required|date',
+            'return_date'    => 'required|date|after_or_equal:rental_date',
+            'guarantee'      => 'required|string|max:255',
+            'equipment_ids'  => 'required|array|min:1',
+            'equipment_ids.*'=> 'exists:equipments,id',
         ]);
 
-        $equipment = Equipment::findOrFail($request->equipment_id);
         $days = \Carbon\Carbon::parse($request->rental_date)
                     ->diffInDays(\Carbon\Carbon::parse($request->return_date)) ?: 1;
-        $totalPrice = $days * $equipment->rental_price_per_day;
 
-        Rental::create([
-            'user_id'      => auth()->id() ?? 1,
-            'equipment_id' => $request->equipment_id,
-            'rental_date'  => $request->rental_date,
-            'return_date'  => $request->return_date,
-            'guarantee'    => $request->guarantee,
-            'total_price'  => $totalPrice,
+        $equipments = Equipment::whereIn('id', $request->equipment_ids)->get();
+        $totalPrice = $equipments->sum(fn($eq) => $eq->rental_price_per_day * $days);
+
+        $rental = Rental::create([
+            'user_id'     => auth()->id(),
+            'renter_name' => $request->renter_name,
+            'rental_date' => $request->rental_date,
+            'return_date' => $request->return_date,
+            'guarantee'   => $request->guarantee,
+            'total_price' => $totalPrice,
         ]);
 
-        $equipment->update(['availability_status' => 'rented']);
+        foreach ($equipments as $eq) {
+            RentalItem::create([
+                'rental_id'    => $rental->id,
+                'equipment_id' => $eq->id,
+                'subtotal'     => $eq->rental_price_per_day * $days,
+            ]);
+            $eq->update(['availability_status' => 'rented']);
+        }
 
-        return redirect()->route('rentals.index')->with('success', 'Rental berhasil dibuat.');
+        return redirect()->route('rentals.show', $rental)->with('success', 'Rental berhasil dibuat.');
     }
 
     public function show(Rental $rental)
     {
+        if (auth()->user()->role === 'customer' && $rental->user_id !== auth()->id()) {
+            abort(403);
+        }
         return view('rentals.show', [
-            'rental' => $rental->load(['equipment', 'user', 'penalties']),
+            'rental' => $rental->load(['items.equipment', 'user', 'penalties']),
         ]);
     }
 
     public function destroy(Rental $rental)
     {
-        $rental->equipment->update(['availability_status' => 'available']);
+        $this->authorize('destroy-data');
+        foreach ($rental->items as $item) {
+            $item->equipment->update(['availability_status' => 'available']);
+        }
         $rental->delete();
 
         return redirect()->route('rentals.index')->with('success', 'Rental berhasil dihapus.');

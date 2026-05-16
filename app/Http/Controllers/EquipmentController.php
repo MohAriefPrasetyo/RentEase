@@ -17,7 +17,7 @@ class EquipmentController extends Controller
 
     public function create()
     {
-        $this->authorize('admin-only');
+        $this->authorize('store-data');
         return view('equipment.create', [
             'categories' => EquipmentCategory::all(),
         ]);
@@ -25,7 +25,7 @@ class EquipmentController extends Controller
 
     public function store(Request $request)
     {
-        $this->authorize('admin-only');
+        $this->authorize('store-data');
         $request->validate([
             'equipment_category_id' => 'required|exists:equipment_categories,id',
             'equipment_name'        => 'required|string|max:255',
@@ -40,7 +40,7 @@ class EquipmentController extends Controller
 
     public function edit(Equipment $equipment)
     {
-        $this->authorize('admin-only');
+        $this->authorize('edit-data');
         return view('equipment.edit', [
             'equipment'  => $equipment,
             'categories' => EquipmentCategory::all(),
@@ -49,7 +49,7 @@ class EquipmentController extends Controller
 
     public function update(Request $request, Equipment $equipment)
     {
-        $this->authorize('admin-only');
+        $this->authorize('edit-data');
         $request->validate([
             'equipment_category_id' => 'required|exists:equipment_categories,id',
             'equipment_name'        => 'required|string|max:255',
@@ -64,7 +64,7 @@ class EquipmentController extends Controller
 
     public function destroy(Equipment $equipment)
     {
-        $this->authorize('admin-only');
+        $this->authorize('destroy-data');
         $equipment->delete();
 
         return redirect()->route('equipment.index')->with('success', 'Equipment berhasil dihapus.');

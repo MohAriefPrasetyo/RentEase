@@ -13,15 +13,22 @@
         <div class="grid grid-cols-2 gap-4 text-sm">
             <div>
                 <p class="text-slate-400 mb-0.5">Penyewa</p>
-                <p class="font-medium text-slate-800">{{ $rental->user->name }}</p>
+                <p class="font-medium text-slate-800">{{ $rental->renter_name }}</p>
             </div>
             <div>
-                <p class="text-slate-400 mb-0.5">Email</p>
+                <p class="text-slate-400 mb-0.5">Akun</p>
                 <p class="font-medium text-slate-800">{{ $rental->user->email }}</p>
             </div>
-            <div>
+            <div class="col-span-2">
                 <p class="text-slate-400 mb-0.5">Peralatan</p>
-                <p class="font-medium text-slate-800">{{ $rental->equipment->equipment_name }}</p>
+                <div class="space-y-1">
+                    @foreach($rental->items as $item)
+                    <div class="flex justify-between text-sm">
+                        <span class="text-slate-800">{{ $item->equipment->equipment_name }}</span>
+                        <span class="text-slate-500">Rp {{ number_format($item->subtotal, 0, ',', '.') }}</span>
+                    </div>
+                    @endforeach
+                </div>
             </div>
             <div>
                 <p class="text-slate-400 mb-0.5">Jaminan</p>
@@ -46,10 +53,6 @@
     <div class="bg-white rounded-xl shadow-sm border border-slate-200">
         <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100">
             <h3 class="font-semibold text-slate-800">Denda</h3>
-            <a href="{{ route('penalties.create') }}"
-               class="inline-flex items-center gap-1 text-xs bg-red-50 hover:bg-red-100 text-red-600 font-medium px-3 py-1.5 rounded-lg transition-colors">
-                + Tambah Denda
-            </a>
         </div>
         <div class="divide-y divide-slate-100">
             @forelse($rental->penalties as $penalty)

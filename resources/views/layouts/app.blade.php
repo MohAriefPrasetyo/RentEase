@@ -106,12 +106,23 @@
 
             @foreach($navItems as $item)
             @php $active = request()->routeIs($item['match']); @endphp
+            @if($item['route'] === 'penalties.index')
+                @can('store-data')
+                <a href="{{ route($item['route']) }}" class="nav-link {{ $active ? 'active' : '' }}">
+                    <svg width="18" height="18" fill="none" stroke="#ffffff" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="{{ $item['icon'] }}"/>
+                    </svg>
+                    {{ $item['label'] }}
+                </a>
+                @endcan
+            @else
             <a href="{{ route($item['route']) }}" class="nav-link {{ $active ? 'active' : '' }}">
                 <svg width="18" height="18" fill="none" stroke="#ffffff" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="{{ $item['icon'] }}"/>
                 </svg>
                 {{ $item['label'] }}
             </a>
+            @endif
             @endforeach
         </nav>
 

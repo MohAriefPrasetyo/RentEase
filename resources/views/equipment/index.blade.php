@@ -7,6 +7,7 @@
 
 <div class="flex items-center justify-between mb-6">
     <div></div>
+    @can('store-data')
     <a href="{{ route('equipment.create') }}"
        class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2.5 rounded-lg transition-colors">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -14,6 +15,7 @@
         </svg>
         Tambah Peralatan
     </a>
+    @endcan
 </div>
 
 <div class="bg-white rounded-xl shadow-sm border border-slate-200">
@@ -53,6 +55,7 @@
                     </td>
                     <td class="px-6 py-4">
                         <div class="flex items-center justify-center gap-2">
+                            @can('edit-data')
                             <a href="{{ route('equipment.edit', $item) }}"
                                class="inline-flex items-center gap-1 text-xs bg-slate-100 hover:bg-blue-100 hover:text-blue-700 text-slate-600 px-3 py-1.5 rounded-lg transition-colors font-medium">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -71,6 +74,7 @@
                                     Hapus
                                 </button>
                             </form>
+                            @endcan
                         </div>
                     </td>
                 </tr>

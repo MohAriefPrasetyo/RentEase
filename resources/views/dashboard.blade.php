@@ -87,8 +87,8 @@
                 @forelse($recentRentals as $rental)
                 <tr class="border-t transition-colors" style="border-color:#f0ede4;"
                     onmouseover="this.style.background='#faf9f4'" onmouseout="this.style.background='transparent'">
-                    <td class="px-6 py-4 font-medium" style="color:#1e3d1a;">{{ $rental->user->name }}</td>
-                    <td class="px-6 py-4" style="color:#4B3621;">{{ $rental->equipment->equipment_name }}</td>
+                    <td class="px-6 py-4 font-medium" style="color:#1e3d1a;">{{ $rental->renter_name }}</td>
+                    <td class="px-6 py-4" style="color:#4B3621;">{{ $rental->items->pluck('equipment.equipment_name')->join(', ') }}</td>
                     <td class="px-6 py-4" style="color:#7a9e75;">{{ \Carbon\Carbon::parse($rental->rental_date)->format('d M Y') }}</td>
                     <td class="px-6 py-4" style="color:#7a9e75;">{{ \Carbon\Carbon::parse($rental->return_date)->format('d M Y') }}</td>
                     <td class="px-6 py-4 text-right font-semibold" style="color:#2D5A27;">Rp {{ number_format($rental->total_price, 0, ',', '.') }}</td>
