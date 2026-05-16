@@ -13,10 +13,8 @@ return new class extends Migration
 
             $table->foreignId('user_id')->constrained();
             $table->foreignId('equipment_id')->constrained('equipments');
-
             $table->date('rental_date');
             $table->date('return_date');
-
             $table->string('guarantee');
             $table->integer('total_price')->default(0);
 
