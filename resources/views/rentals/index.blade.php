@@ -8,8 +8,9 @@
 <div class="flex items-center justify-between mb-6">
     <div></div>
     <a href="{{ route('rentals.create') }}"
-       class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2.5 rounded-lg transition-colors">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+       style="background:#2D5A27; color:#F5F5DC; font-size:13px; font-weight:600; padding:10px 18px; border-radius:10px; display:inline-flex; align-items:center; gap:8px; text-decoration:none;"
+       onmouseover="this.style.background='#1e3d1a'" onmouseout="this.style.background='#2D5A27'">
+        <svg width="16" height="16" fill="none" stroke="#F5F5DC" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
         </svg>
         Buat Rental
@@ -46,7 +47,9 @@
                     <td class="px-6 py-4">
                         <div class="flex items-center justify-center gap-2">
                             <a href="{{ route('rentals.show', $rental) }}"
-                               class="inline-flex items-center gap-1 text-xs bg-slate-100 hover:bg-blue-100 hover:text-blue-700 text-slate-600 px-3 py-1.5 rounded-lg transition-colors font-medium">
+                               style="display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;padding:6px 12px;border-radius:8px;background:#e8f5e4;color:#2D5A27;border:1px solid #a8d5a0;text-decoration:none;"
+                               onmouseover="this.style.background='#d4edda'" onmouseout="this.style.background='#e8f5e4'">
+                                <svg width="13" height="13" fill="none" stroke="#2D5A27" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                                 Detail
                             </a>
                             @can('destroy-data')
@@ -54,7 +57,9 @@
                                   onsubmit="return confirm('Hapus rental ini?')">
                                 @csrf @method('DELETE')
                                 <button type="submit"
-                                        class="inline-flex items-center gap-1 text-xs bg-slate-100 hover:bg-red-100 hover:text-red-700 text-slate-600 px-3 py-1.5 rounded-lg transition-colors font-medium">
+                                        style="display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;padding:6px 12px;border-radius:8px;background:#fde8e8;color:#b91c1c;border:1px solid #fca5a5;cursor:pointer;"
+                                        onmouseover="this.style.background='#fecaca'" onmouseout="this.style.background='#fde8e8'">
+                                    <svg width="13" height="13" fill="none" stroke="#b91c1c" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                                     Hapus
                                 </button>
                             </form>

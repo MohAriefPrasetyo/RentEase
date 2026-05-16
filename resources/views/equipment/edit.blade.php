@@ -58,11 +58,13 @@
 
             <div class="flex items-center gap-3 pt-2">
                 <button type="submit"
-                        class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-6 py-2.5 rounded-lg transition-colors">
+                        style="background:#2D5A27;color:#F5F5DC;font-size:13px;font-weight:600;padding:10px 24px;border-radius:10px;border:none;cursor:pointer;"
+                        onmouseover="this.style.background='#1e3d1a'" onmouseout="this.style.background='#2D5A27'">
                     Perbarui
                 </button>
                 <a href="{{ route('equipment.index') }}"
-                   class="text-slate-600 hover:text-slate-800 text-sm font-medium px-4 py-2.5 rounded-lg hover:bg-slate-100 transition-colors">
+                   style="font-size:13px;font-weight:500;padding:10px 16px;border-radius:10px;color:#4B3621;text-decoration:none;background:#f0ede4;border:1px solid #d4cfc0;"
+                   onmouseover="this.style.background='#e0ddd0'" onmouseout="this.style.background='#f0ede4'">
                     Batal
                 </a>
             </div>
