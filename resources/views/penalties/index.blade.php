@@ -5,6 +5,49 @@
 
 @section('content')
 
+{{-- ── Stats Cards ── --}}
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:28px;">
+
+    <div style="background:#fff;border-radius:16px;padding:20px;border:1.5px solid #e0ddd0;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+            <p style="font-size:13px;font-weight:500;color:#7a9e75;margin:0;">Barang Saya Pakai</p>
+            <div style="width:36px;height:36px;border-radius:10px;background:#e8f0e6;display:flex;align-items:center;justify-content:center;">
+                <svg width="18" height="18" fill="none" stroke="#2D5A27" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                </svg>
+            </div>
+        </div>
+        <p style="font-size:28px;font-weight:800;color:#1e3d1a;margin:0 0 4px;">{{ $totalMyItems }}</p>
+        <p style="font-size:12px;color:#a0b89a;margin:0;">Total item disewa</p>
+    </div>
+
+    <div style="background:#fff;border-radius:16px;padding:20px;border:1.5px solid #e0ddd0;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+            <p style="font-size:13px;font-weight:500;color:#7a9e75;margin:0;">Total Rental Saya</p>
+            <div style="width:36px;height:36px;border-radius:10px;background:#f0e8dc;display:flex;align-items:center;justify-content:center;">
+                <svg width="18" height="18" fill="none" stroke="#4B3621" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                </svg>
+            </div>
+        </div>
+        <p style="font-size:28px;font-weight:800;color:#1e3d1a;margin:0 0 4px;">{{ $totalMyRentals }}</p>
+        <p style="font-size:12px;color:#a0b89a;margin:0;">Transaksi</p>
+    </div>
+    <div style="background:#fff;border-radius:16px;padding:20px;border:1.5px solid #e0ddd0;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+            <p style="font-size:13px;font-weight:500;color:#7a9e75;margin:0;">Total Denda</p>
+            <div style="width:36px;height:36px;border-radius:10px;background:#fde8e8;display:flex;align-items:center;justify-content:center;">
+                <svg width="18" height="18" fill="none" stroke="#b91c1c" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                </svg>
+            </div>
+        </div>
+        <p style="font-size:22px;font-weight:800;color:#1e3d1a;margin:0 0 4px;">Rp {{ number_format($totalPenalties, 0, ',', '.') }}</p>
+        <p style="font-size:12px;color:#e57373;margin:0;">Akumulasi denda</p>
+    </div>
+
+</div>
+
 <div class="flex items-center justify-between mb-6">
     <div></div>
     <a href="{{ route('penalties.create') }}"

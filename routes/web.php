@@ -7,6 +7,7 @@ use App\Http\Controllers\RentalController;
 use App\Http\Controllers\PenaltyController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AiSearchController;
 
 // 1. HALAMAN UTAMA
 Route::get('/', function () {
@@ -45,4 +46,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
+
+Route::get('/equipment/ai-search', [AiSearchController::class, 'index'])->name('ai-search.index');
+Route::post('/equipment/ai-search', [AiSearchController::class, 'search'])->name('ai-search.search');
 });

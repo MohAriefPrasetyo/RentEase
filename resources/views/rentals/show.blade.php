@@ -5,77 +5,106 @@
 
 @section('content')
 
-<div class="max-w-3xl space-y-5">
+<div style="display:flex;flex-direction:column;gap:20px;">
 
-    {{-- Rental Info --}}
-    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-        <h3 class="font-semibold text-slate-800 mb-4">Informasi Rental</h3>
-        <div class="grid grid-cols-2 gap-4 text-sm">
-            <div>
-                <p class="text-slate-400 mb-0.5">Penyewa</p>
-                <p class="font-medium text-slate-800">{{ $rental->renter_name }}</p>
+    {{-- ── Informasi Rental ── --}}
+    <div style="background:#fff;border-radius:16px;border:1px solid #e5e7eb;padding:28px;">
+        <h3 style="font-size:16px;font-weight:700;color:#111827;margin:0 0 24px;">Informasi Rental</h3>
+
+        {{-- Foto Peralatan --}}
+        @php $firstItem = $rental->items->first(); @endphp
+        @if($firstItem && $firstItem->equipment->image)
+        <div style="width:100%;border-radius:12px;overflow:hidden;aspect-ratio:16/5;margin-bottom:24px;">
+            <img src="{{ asset('storage/' . $firstItem->equipment->image) }}"
+                 alt="{{ $firstItem->equipment->equipment_name }}"
+                 style="width:100%;height:100%;object-fit:cover;">
+        </div>
+        @else
+        <div style="width:100%;border-radius:12px;overflow:hidden;aspect-ratio:16/5;margin-bottom:24px;background:linear-gradient(135deg,#c8dfc4,#e8f0e6);display:flex;align-items:center;justify-content:center;">
+            <svg width="56" height="56" fill="none" stroke="#2D5A27" opacity=".25" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"
+                      d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+            </svg>
+        </div>
+        @endif
+
+        {{-- Fields --}}
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;">
+
+            <div style="padding:14px 0;border-bottom:1px solid #f3f4f6;">
+                <p style="font-size:12px;color:#9ca3af;margin:0 0 4px;">Penyewa</p>
+                <p style="font-size:14px;font-weight:600;color:#111827;margin:0;">{{ $rental->renter_name }}</p>
             </div>
-            <div>
-                <p class="text-slate-400 mb-0.5">Akun</p>
-                <p class="font-medium text-slate-800">{{ $rental->user->email }}</p>
+            <div style="padding:14px 0;border-bottom:1px solid #f3f4f6;">
+                <p style="font-size:12px;color:#9ca3af;margin:0 0 4px;">Akun</p>
+                <p style="font-size:14px;font-weight:600;color:#111827;margin:0;">{{ $rental->user->email }}</p>
             </div>
-            <div class="col-span-2">
-                <p class="text-slate-400 mb-0.5">Peralatan</p>
-                <div class="space-y-1">
-                    @foreach($rental->items as $item)
-                    <div class="flex justify-between text-sm">
-                        <span class="text-slate-800">{{ $item->equipment->equipment_name }}</span>
-                        <span class="text-slate-500">Rp {{ number_format($item->subtotal, 0, ',', '.') }}</span>
-                    </div>
-                    @endforeach
+
+            <div style="padding:14px 0;border-bottom:1px solid #f3f4f6;grid-column:span 2;">
+                <p style="font-size:12px;color:#9ca3af;margin:0 0 6px;">Peralatan</p>
+                @foreach($rental->items as $item)
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;">
+                    <p style="font-size:14px;font-weight:600;color:#111827;margin:0;">{{ $item->equipment->equipment_name }}</p>
+                    <p style="font-size:14px;color:#6b7280;margin:0;">Rp {{ number_format($item->subtotal, 0, ',', '.') }}</p>
                 </div>
+                @endforeach
             </div>
-            <div>
-                <p class="text-slate-400 mb-0.5">Jaminan</p>
-                <p class="font-medium text-slate-800">{{ $rental->guarantee }}</p>
+
+            <div style="padding:14px 0;border-bottom:1px solid #f3f4f6;">
+                <p style="font-size:12px;color:#9ca3af;margin:0 0 4px;">Jaminan</p>
+                <p style="font-size:14px;font-weight:600;color:#111827;margin:0;">{{ $rental->guarantee }}</p>
             </div>
-            <div>
-                <p class="text-slate-400 mb-0.5">Tanggal Sewa</p>
-                <p class="font-medium text-slate-800">{{ \Carbon\Carbon::parse($rental->rental_date)->format('d M Y') }}</p>
+            <div style="padding:14px 0;border-bottom:1px solid #f3f4f6;">
+                <p style="font-size:12px;color:#9ca3af;margin:0 0 4px;">Tanggal Sewa</p>
+                <p style="font-size:14px;font-weight:600;color:#111827;margin:0;">{{ \Carbon\Carbon::parse($rental->rental_date)->format('d M Y') }}</p>
             </div>
-            <div>
-                <p class="text-slate-400 mb-0.5">Tanggal Kembali</p>
-                <p class="font-medium text-slate-800">{{ \Carbon\Carbon::parse($rental->return_date)->format('d M Y') }}</p>
+
+            <div style="padding:14px 0;border-bottom:1px solid #f3f4f6;">
+                <p style="font-size:12px;color:#9ca3af;margin:0 0 4px;">Tanggal Kembali</p>
+                <p style="font-size:14px;font-weight:600;color:#111827;margin:0;">{{ \Carbon\Carbon::parse($rental->return_date)->format('d M Y') }}</p>
             </div>
-            <div class="col-span-2 pt-2 border-t border-slate-100">
-                <p class="text-slate-400 mb-0.5">Total Harga</p>
-                <p class="text-2xl font-bold text-blue-600">Rp {{ number_format($rental->total_price, 0, ',', '.') }}</p>
+            <div style="padding:14px 0;border-bottom:1px solid #f3f4f6;">
+                <p style="font-size:12px;color:#9ca3af;margin:0 0 4px;">Durasi</p>
+                <p style="font-size:14px;font-weight:600;color:#111827;margin:0;">
+                    {{ \Carbon\Carbon::parse($rental->rental_date)->diffInDays(\Carbon\Carbon::parse($rental->return_date)) }} hari
+                </p>
             </div>
+
+            <div style="padding:18px 0;grid-column:span 2;">
+                <p style="font-size:12px;color:#9ca3af;margin:0 0 6px;">Total Harga</p>
+                <p style="font-size:26px;font-weight:800;color:#2D5A27;margin:0;">Rp {{ number_format($rental->total_price, 0, ',', '.') }}</p>
+            </div>
+
         </div>
     </div>
 
-    {{-- Penalties --}}
-    <div class="bg-white rounded-xl shadow-sm border border-slate-200">
-        <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100">
-            <h3 class="font-semibold text-slate-800">Denda</h3>
+    {{-- ── Denda ── --}}
+    <div style="background:#fff;border-radius:16px;border:1px solid #e5e7eb;overflow:hidden;">
+        <div style="padding:20px 28px;border-bottom:1px solid #f3f4f6;">
+            <h3 style="font-size:16px;font-weight:700;color:#111827;margin:0;">Denda</h3>
         </div>
-        <div class="divide-y divide-slate-100">
-            @forelse($rental->penalties as $penalty)
-            <div class="px-6 py-4 flex items-start justify-between gap-4">
-                <div>
-                    <p class="text-sm text-slate-700">{{ $penalty->damage_description }}</p>
-                    <p class="text-xs text-slate-400 mt-0.5">{{ $penalty->created_at->format('d M Y') }}</p>
-                </div>
-                <p class="text-sm font-semibold text-red-600 flex-shrink-0">Rp {{ number_format($penalty->penalty_fee, 0, ',', '.') }}</p>
+        @forelse($rental->penalties as $penalty)
+        <div style="padding:16px 28px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #f9fafb;">
+            <div>
+                <p style="font-size:13px;color:#374151;margin:0 0 2px;">{{ $penalty->damage_description }}</p>
+                <p style="font-size:12px;color:#9ca3af;margin:0;">{{ $penalty->created_at->format('d M Y') }}</p>
             </div>
-            @empty
-            <p class="px-6 py-6 text-center text-slate-400 text-sm">Tidak ada denda.</p>
-            @endforelse
+            <p style="font-size:14px;font-weight:700;color:#dc2626;margin:0;">Rp {{ number_format($penalty->penalty_fee, 0, ',', '.') }}</p>
         </div>
+        @empty
+        <p style="text-align:center;padding:32px;font-size:13px;color:#9ca3af;margin:0;">Tidak ada denda.</p>
+        @endforelse
     </div>
 
+    {{-- Kembali --}}
     <a href="{{ route('rentals.index') }}"
-       class="inline-flex items-center gap-2 text-slate-600 hover:text-slate-800 text-sm font-medium">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+       style="display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:#2D5A27;text-decoration:none;">
+        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
         </svg>
         Kembali ke daftar rental
     </a>
+
 </div>
 
 @endsection

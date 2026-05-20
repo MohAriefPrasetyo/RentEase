@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Penalty;
 use App\Models\Rental;
 use App\Models\RentalItem;
 use App\Models\Equipment;
@@ -11,12 +12,7 @@ class RentalController extends Controller
 {
     public function index()
     {
-        $user = auth()->user();
-        $rentals = $user->role === 'admin'
-            ? Rental::with(['user', 'items.equipment'])->latest()->paginate(10)
-            : Rental::with(['user', 'items.equipment'])->where('user_id', $user->id)->latest()->paginate(10);
-
-        return view('rentals.index', compact('rentals'));
+        return redirect()->route('equipment.index', ['tab' => 'rental']);
     }
 
     public function create()
@@ -63,6 +59,13 @@ class RentalController extends Controller
             ]);
             $eq->update(['availability_status' => 'rented']);
         }
+
+        // Otomatis buat record denda dengan nominal = total harga rental
+        Penalty::create([
+            'rental_id'          => $rental->id,
+            'damage_description' => null,
+            'penalty_fee'        => $totalPrice,
+        ]);
 
         return redirect()->route('rentals.show', $rental)->with('success', 'Rental berhasil dibuat.');
     }

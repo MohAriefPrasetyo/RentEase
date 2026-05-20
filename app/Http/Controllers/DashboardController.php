@@ -11,11 +11,12 @@ class DashboardController extends Controller
     public function index()
     {
         return view('dashboard', [
-            'totalEquipment'    => Equipment::count(),
-            'availableEquipment'=> Equipment::where('availability_status', 'available')->count(),
-            'totalRentals'      => Rental::count(),
-            'totalPenalties'    => Penalty::sum('penalty_fee'),
-            'recentRentals'     => Rental::with(['user', 'items.equipment'])->latest()->take(5)->get(),
+            'equipments'         => Equipment::with('category')->latest()->paginate(8),
+            'totalEquipment'     => Equipment::count(),
+            'availableEquipment' => Equipment::where('availability_status', 'available')->count(),
+            'totalRentals'       => Rental::count(),
+            'totalPenalties'     => Penalty::sum('penalty_fee'),
+            'recentRentals'      => Rental::with(['user', 'items.equipment'])->latest()->take(5)->get(),
         ]);
     }
 }

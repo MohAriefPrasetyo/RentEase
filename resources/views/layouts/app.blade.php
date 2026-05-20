@@ -6,189 +6,251 @@
     <title>RentEase - @yield('title', 'Dashboard')</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background-color: #f7f6f0; margin: 0; }
+        body { font-family: 'Inter', sans-serif; background-color: #ffffff; margin: 0; }
         [x-cloak] { display: none !important; }
 
-        #sidebar {
-            position: fixed;
-            top: 0; left: 0;
-            height: 100%;
-            width: 256px;
-            background: linear-gradient(180deg, #1a3518 0%, #2D5A27 55%, #3a7232 100%);
-            z-index: 30;
-            display: flex;
-            flex-direction: column;
-            transition: transform 0.3s ease;
+        /* ─── NAVBAR ─────────────────────────────────── */
+        #navbar {
+            position: sticky; top: 0; z-index: 50;
+            background: #ffffff;
+            border-bottom: 1px solid #e0ddd0;
+            padding: 0 32px; height: 64px;
+            display: flex; align-items: center; justify-content: space-between;
         }
-        #sidebar * { color: #ffffff !important; }
-        #sidebar .muted { color: #a8c8a4 !important; }
-
-        .nav-link {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 10px 16px;
-            border-radius: 0 12px 12px 0;
-            border-left: 3px solid transparent;
-            font-size: 14px;
-            font-weight: 500;
-            text-decoration: none;
-            transition: background 0.2s;
-            color: #ffffff !important;
+        .navbar-brand {
+            font-weight: 700; font-size: 20px; color: #2D5A27;
+            letter-spacing: -0.3px; text-decoration: none; flex-shrink: 0;
         }
-        .nav-link:hover { background: rgba(255,255,255,0.1); border-left-color: rgba(255,255,255,0.5); }
-        .nav-link.active { background: rgba(255,255,255,0.18); border-left-color: #F5F5DC; }
-        .nav-link svg { flex-shrink: 0; }
+        .navbar-nav { display: flex; align-items: center; gap: 4px; }
+        .nav-item {
+            padding: 7px 14px; border-radius: 8px; font-size: 14px;
+            font-weight: 500; color: #4a5568; text-decoration: none;
+            transition: background .15s, color .15s; white-space: nowrap;
+        }
+        .nav-item:hover  { background: #f0ede4; color: #2D5A27; }
+        .nav-item.active { background: #e8f0e6; color: #2D5A27; font-weight: 600; }
+        .navbar-right { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+        .user-badge {
+            display: flex; align-items: center; gap: 8px;
+            padding: 6px 12px; border-radius: 8px;
+            background: #f0ede4; border: 1px solid #d4cfc0;
+            cursor: pointer; position: relative;
+        }
+        .dropdown-menu {
+            position: absolute; top: calc(100% + 8px); right: 0;
+            background: #fff; border: 1px solid #e0ddd0; border-radius: 12px;
+            padding: 6px; min-width: 180px;
+            box-shadow: 0 8px 24px rgba(0,0,0,.10); z-index: 100;
+        }
+        .dropdown-item {
+            display: flex; align-items: center; gap: 8px;
+            padding: 8px 12px; border-radius: 8px; font-size: 13px;
+            color: #4a5568; text-decoration: none; transition: background .15s; cursor: pointer;
+        }
+        .dropdown-item:hover { background: #f0ede4; color: #2D5A27; }
+        .dropdown-divider { border-top: 1px solid #e0ddd0; margin: 4px 0; }
 
-        #main-content { margin-left: 256px; min-height: 100vh; display: flex; flex-direction: column; }
+        /* ─── HERO BANNER — full bleed, tanpa batas ───── */
+        .hero-banner {
+            position: relative;
+            width: 100%;
+            min-height: calc(100vh - 64px);
+            display: flex; align-items: center;
+            overflow: hidden;
+            /* TIDAK ada border-radius, margin, atau padding */
+            background-image: url('../image/bg2_dashboard.jpg');
+            background-size: cover;
+            background-position: center bottom;
+        }
+        .hero-overlay {
+            position: absolute; inset: 0;
+            background: linear-gradient(90deg,
+                rgba(10,30,8,.85) 0%,
+                rgba(10,30,8,.55) 55%,
+                rgba(10,30,8,.20) 100%);
+            /* TIDAK ada border-radius */
+        }
+        .hero-inner {
+            position: relative; z-index: 2; width: 100%;
+            display: flex; align-items: center;
+            justify-content: space-between;
+            padding: 44px 52px; gap: 40px;
+        }
+        .hero-text { flex: 1; min-width: 0; }
+        .hero-eyebrow {
+            font-size: 11px; font-weight: 700; letter-spacing: 2.5px;
+            text-transform: uppercase; color: #8fcf8a; margin-bottom: 12px;
+        }
+        .hero-text h1 {
+            font-size: 42px; font-weight: 800; color: #fff;
+            margin: 0 0 10px; line-height: 1.1; letter-spacing: -0.5px;
+        }
+        .hero-text h1 span { color: #7bc67a; }
+        .hero-text p {
+            font-size: 15px; color: rgba(255,255,255,.80);
+            margin: 0; max-width: 400px; line-height: 1.65;
+        }
+        .hero-logo-slot {
+            flex-shrink: 0;
+            width: 240px; height: 160px;
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            overflow: hidden;
+        }
 
-        @media (max-width: 1023px) {
-            #sidebar { transform: translateX(-100%); }
-            #sidebar.open { transform: translateX(0); }
-            #main-content { margin-left: 0; }
+        /* ─── PAGE HEADER (halaman lain) ──────────────── */
+        .page-header { margin-bottom: 24px; }
+        .page-header h1 { font-size: 22px; font-weight: 700; color: #1e3d1a; margin: 0 0 4px; }
+        .page-header p  { font-size: 13px; color: #7a9e75; margin: 0; }
+
+        /* ─── MOBILE ──────────────────────────────────── */
+        .hamburger { display: none; }
+        .mobile-menu {
+            display: none; flex-direction: column;
+            background: #faf9f4; border-bottom: 1px solid #e0ddd0;
+            padding: 12px 20px; gap: 4px;
+        }
+        .mobile-menu.open { display: flex; }
+        @media (max-width: 768px) {
+            #navbar { padding: 0 16px; }
+            .navbar-nav { display: none; }
+            .hero-inner { padding: 32px 24px; flex-direction: column; align-items: flex-start; }
+            .hero-logo-slot { display: none; }
+            .hero-text h1 { font-size: 26px; }
+            .hamburger {
+                display: flex; align-items: center; justify-content: center;
+                padding: 8px; border: none; background: transparent;
+                cursor: pointer; border-radius: 8px;
+            }
+            .hamburger:hover { background: #f0ede4; }
         }
     </style>
 </head>
-<body x-data="{ sidebarOpen: false }"
-      @keydown.escape="sidebarOpen = false">
+<body x-data="{ userOpen: false, mobileOpen: false }" @click.away="userOpen = false">
+{{-- ═══ NAVBAR ════════════════════════════════════════ --}}
+<nav id="navbar">
+    <a href="{{ route('dashboard') }}" class="navbar-brand">
+        <span style="color:#4A4333;">Rent</span><span style="color:#7bc67a;">Ease</span>
+    </a>
 
-    {{-- Overlay --}}
-    <div x-show="sidebarOpen" x-cloak
-         @click="sidebarOpen = false"
-         style="position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:20;"
-         class="lg:hidden"></div>
-
-    {{-- SIDEBAR --}}
-    <div id="sidebar" :class="sidebarOpen ? 'open' : ''">
-
-        {{-- Logo --}}
-        <div style="padding:24px 20px 20px; border-bottom:1px solid rgba(255,255,255,0.15);">
-            <div style="display:flex; align-items:center; gap:12px;">
-                <div style="width:44px;height:44px;border-radius:12px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                    <svg width="22" height="22" fill="none" stroke="#ffffff" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
-                    </svg>
-                </div>
-                <div>
-                    <div style="font-weight:700;font-size:16px;color:#ffffff;">RentEase</div>
-                    <div style="font-size:11px;color:#a8c8a4;margin-top:2px;">Outdoor Gear Rental</div>
-                </div>
-            </div>
-        </div>
-
-        {{-- User Card --}}
-        <div style="margin:16px 12px;padding:12px;border-radius:12px;background:rgba(0,0,0,0.25);border:1px solid rgba(255,255,255,0.15);display:flex;align-items:center;gap:10px;">
-            <div style="width:36px;height:36px;border-radius:8px;background:#4B3621;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:#ffffff;flex-shrink:0;">
-                {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
-            </div>
-            <div style="min-width:0;">
-                <div style="font-size:13px;font-weight:600;color:#ffffff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ auth()->user()->name }}</div>
-                <div style="font-size:11px;color:#a8c8a4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ auth()->user()->email }}</div>
-            </div>
-        </div>
-
-        {{-- Nav --}}
-        <nav style="flex:1;padding:0 8px;overflow-y:auto;">
-            <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:#7aaa74;padding:0 16px;margin-bottom:8px;">Menu</div>
-
+    <div class="navbar-right">
+        <div class="navbar-nav">
             @php
             $navItems = [
-                ['route'=>'dashboard',       'label'=>'Dashboard',   'match'=>'dashboard',    'icon'=>'M4 5a1 1 0 011-1h4a1 1 0 011 1v5a1 1 0 01-1 1H5a1 1 0 01-1-1V5zm10 0a1 1 0 011-1h4a1 1 0 011 1v2a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zm10-3a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1h-4a1 1 0 01-1-1v-7z'],
-                ['route'=>'equipment.index', 'label'=>'Peralatan',   'match'=>'equipment.*',  'icon'=>'M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10'],
-                ['route'=>'rentals.index',   'label'=>'Rental',      'match'=>'rentals.*',    'icon'=>'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01'],
-                ['route'=>'penalties.index', 'label'=>'Denda',       'match'=>'penalties.*',  'icon'=>'M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z'],
-                ['route'=>'profile.show',    'label'=>'Profil Saya', 'match'=>'profile.*',    'icon'=>'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z'],
-            ];
+                ['route' => 'dashboard',       'label' => 'Dashboard', 'match' => 'dashboard'],
+                ['route' => 'equipment.index', 'label' => 'Peralatan', 'match' => 'equipment.*'],
+                ['route' => 'penalties.index', 'label' => 'Denda',     'match' => 'penalties.*'],
+                ];
             @endphp
-
             @foreach($navItems as $item)
-            @php $active = request()->routeIs($item['match']); @endphp
-            @if($item['route'] === 'penalties.index')
-                @can('store-data')
-                <a href="{{ route($item['route']) }}" class="nav-link {{ $active ? 'active' : '' }}">
-                    <svg width="18" height="18" fill="none" stroke="#ffffff" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="{{ $item['icon'] }}"/>
-                    </svg>
+                <a href="{{ route($item['route']) }}"
+                   class="nav-item {{ request()->routeIs($item['match']) ? 'active' : '' }}">
                     {{ $item['label'] }}
                 </a>
-                @endcan
-            @else
-            <a href="{{ route($item['route']) }}" class="nav-link {{ $active ? 'active' : '' }}">
-                <svg width="18" height="18" fill="none" stroke="#ffffff" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="{{ $item['icon'] }}"/>
-                </svg>
-                {{ $item['label'] }}
-            </a>
-            @endif
             @endforeach
-        </nav>
+        </div>
 
-        {{-- Logout --}}
-        <div style="padding:12px;border-top:1px solid rgba(255,255,255,0.12);">
-            <form action="{{ route('auth.logout') }}" method="POST">
-                @csrf @method('DELETE')
-                <button type="submit" class="nav-link" style="width:100%;background:none;border:none;cursor:pointer;text-align:left;">
-                    <svg width="18" height="18" fill="none" stroke="#ffffff" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+        {{-- Akun --}}
+        <div class="user-badge" @click.stop="userOpen = !userOpen">
+            <div style="width:28px;height:28px;border-radius:7px;background:#2D5A27;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;">
+                {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+            </div>
+            <span style="font-size:13px;font-weight:500;color:#4B3621;">{{ auth()->user()->name }}</span>
+            <svg width="14" height="14" fill="none" stroke="#7a9e75" viewBox="0 0 24 24"
+                 style="transition:transform .2s;" :style="userOpen ? 'transform:rotate(180deg)' : ''">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+
+            <div class="dropdown-menu" x-show="userOpen" x-cloak @click.stop>
+                <div style="padding:8px 12px 10px;border-bottom:1px solid #e0ddd0;margin-bottom:4px;">
+                    <div style="font-size:13px;font-weight:600;color:#1e3d1a;">{{ auth()->user()->name }}</div>
+                    <div style="font-size:11px;color:#7a9e75;margin-top:2px;">{{ auth()->user()->email }}</div>
+                </div>
+                <a href="{{ route('profile.show') }}" class="dropdown-item">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                     </svg>
-                    Keluar
-                </button>
-            </form>
-            <div style="text-align:center;font-size:11px;color:#7aaa74;margin-top:10px;">© 2026 RentEase</div>
+                    Profil Saya
+                </a>
+                <div class="dropdown-divider"></div>
+                <form action="{{ route('auth.logout') }}" method="POST">
+                    @csrf @method('DELETE')
+                    <button type="submit" class="dropdown-item" style="width:100%;border:none;background:none;text-align:left;color:#b91c1c;">
+                        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                        </svg>
+                        Keluar
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        {{-- Hamburger (Hanya muncul di mobile) --}}
+        <button class="hamburger" @click="mobileOpen = !mobileOpen">
+            <svg width="20" height="20" fill="none" stroke="#2D5A27" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+        </button>
+    </div>
+</nav>
+{{-- Mobile menu --}}
+<div class="mobile-menu" x-show="mobileOpen" x-cloak :class="{ 'open': mobileOpen }">
+    @foreach($navItems as $item)
+        <a href="{{ route($item['route']) }}"
+           class="padding:10px 12px;border-radius:8px;font-size:14px;font-weight:500;
+                  color:{{ request()->routeIs($item['match']) ? '#2D5A27' : '#4a5568' }};
+                  background:{{ request()->routeIs($item['match']) ? '#e8f0e6' : 'transparent' }};
+                  text-decoration:none;">
+            {{ $item['label'] }}
+        </a>
+    @endforeach
+
+</div>
+
+{{-- ═══ MAIN ════════════════════════════════════════════ --}}
+{{-- Untuk dashboard: hero full-bleed dulu (tanpa padding), lalu konten dengan padding --}}
+@if(request()->routeIs('dashboard'))
+    <div class="hero-banner">
+        <div class="hero-overlay"></div>
+        <div class="hero-inner">
+            <div class="hero-text">
+                <div class="hero-eyebrow">Selamat Datang di</div>
+                <h1>Rent<span>Ease</span></h1>
+                <p>Tempat peminjaman alat kemping aman dan terpecaya dengan menggunakan website sebagai fitur boking.<br>
+                   .</p>
+            </div>
+            <div class="hero-logo-slot">
+                <img src="../image/logo.jpg" alt="Logo RentEase" style="width:100%;height:100%;object-fit:cover;">
+            </div>
         </div>
     </div>
+    <main style="min-height: calc(100vh - 64px - 380px); padding: 28px 32px;">
+@else
+    <main style="min-height: calc(100vh - 64px); padding: 28px 32px;">
+        <div class="page-header">
+            <h1>@yield('title', 'Halaman')</h1>
+            <p>@yield('subtitle', '')</p>
+        </div>
+@endif
 
-    {{-- MAIN --}}
-    <div id="main-content">
+    {{-- Flash success --}}
+    @if(session('success'))
+        <div style="margin-bottom:20px;padding:12px 16px;border-radius:12px;background:#e8f5e4;border:1px solid #a8d5a0;color:#2D5A27;font-size:14px;display:flex;align-items:center;gap:8px;">
+            <svg width="16" height="16" fill="#2D5A27" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+            </svg>
+            {{ session('success') }}
+        </div>
+    @endif
 
-        {{-- Topbar --}}
-        <header style="background:#faf9f4;border-bottom:1px solid #e0ddd0;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;">
-            <div style="display:flex;align-items:center;gap:12px;">
-                <button @click="sidebarOpen = !sidebarOpen"
-                        style="display:none;padding:8px;border-radius:8px;border:none;background:transparent;cursor:pointer;color:#2D5A27;"
-                        class="lg:hidden"
-                        id="menu-btn">
-                    <svg width="20" height="20" fill="none" stroke="#2D5A27" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-                    </svg>
-                </button>
-                <div>
-                    <div style="font-weight:600;font-size:14px;color:#1e3d1a;">@yield('title', 'Dashboard')</div>
-                    <div style="font-size:12px;color:#7a9e75;">@yield('subtitle', 'Selamat datang di RentEase')</div>
-                </div>
-            </div>
-            <div style="display:flex;align-items:center;gap:8px;padding:6px 12px;border-radius:8px;background:#f0ede4;border:1px solid #d4cfc0;">
-                <div style="width:26px;height:26px;border-radius:6px;background:#4B3621;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#ffffff;flex-shrink:0;">
-                    {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
-                </div>
-                <span style="font-size:13px;font-weight:500;color:#4B3621;">{{ auth()->user()->name }}</span>
-            </div>
-        </header>
+    @yield('content')
+</main>
 
-        <main style="flex:1; padding:24px; overflow-y:auto;">
-            @if(session('success'))
-                <div style="margin-bottom:20px;padding:12px 16px;border-radius:12px;background:#e8f5e4;border:1px solid #a8d5a0;color:#2D5A27;font-size:14px;display:flex;align-items:center;gap:8px;">
-                    <svg width="16" height="16" fill="#2D5A27" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                    </svg>
-                    {{ session('success') }}
-                </div>
-            @endif
-            @yield('content')
-        </main>
-    </div>
-
-    <script>
-        // Show menu button on mobile
-        const menuBtn = document.getElementById('menu-btn');
-        if (window.innerWidth < 1024) menuBtn.style.display = 'block';
-        window.addEventListener('resize', () => {
-            menuBtn.style.display = window.innerWidth < 1024 ? 'block' : 'none';
-        });
-    </script>
-
+<footer style="text-align:center;padding:16px;font-size:12px;color:#f0ede4;border-top:1px solid #2D5A27;background:#2D5A27;">
+    © 2026 RentEase. All rights reserved.
+</footer>
 </body>
 </html>
