@@ -144,7 +144,7 @@
             @php
             $navItems = [
                 ['route' => 'dashboard',       'label' => 'Dashboard', 'match' => 'dashboard'],
-                ['route' => 'equipment.index', 'label' => 'Peralatan', 'match' => 'equipment.*'],
+                ['route' => 'equipment.index', 'label' => 'Rentals', 'match' => 'equipment.*'],
                 ['route' => 'penalties.index', 'label' => 'Denda',     'match' => 'penalties.*'],
                 ];
             @endphp

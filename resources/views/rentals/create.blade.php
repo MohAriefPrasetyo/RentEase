@@ -3,11 +3,25 @@
 @section('subtitle', 'Tambah transaksi rental baru')
 
 @section('content')
+
+<style>
+     input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+
+</style>
+
 <div class="max-w-2xl">
     <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
         <form action="{{ route('rentals.store') }}" method="POST" class="space-y-5">
             @csrf
 
+            {{-- Nama Penyewa --}}
             <div>
                 <label class="block text-sm font-medium text-slate-700 mb-1.5">Nama Penyewa</label>
                 <input type="text" name="renter_name" value="{{ old('renter_name', auth()->user()->name) }}"
@@ -16,6 +30,7 @@
                 @error('renter_name') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
             </div>
 
+            {{-- Daftar Pilihan Peralatan --}}
             <div>
                 <label class="block text-sm font-medium text-slate-700 mb-1.5">Pilih Peralatan <span class="text-slate-400 font-normal">(bisa lebih dari satu)</span></label>
                 <div class="border border-slate-300 rounded-lg divide-y divide-slate-100 max-h-56 overflow-y-auto">
@@ -35,6 +50,7 @@
                 @error('equipment_ids') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
             </div>
 
+            {{-- Tanggal Sewa & Kembali --}}
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-1.5">Tanggal Sewa</label>
@@ -50,6 +66,7 @@
                 </div>
             </div>
 
+            {{-- Jaminan --}}
             <div>
                 <label class="block text-sm font-medium text-slate-700 mb-1.5">Jaminan</label>
                 <input type="text" name="guarantee" value="{{ old('guarantee') }}"
@@ -58,14 +75,15 @@
                 @error('guarantee') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
             </div>
 
+            {{-- Tombol Aksi --}}
             <div class="flex items-center gap-3 pt-2">
                 <button type="submit"
-                        style="background:#2D5A27;color:#F5F5DC;font-size:13px;font-weight:600;padding:10px 24px;border-radius:10px;border:none;cursor:pointer;"
+                        style="background:#2D5A27;color:#F5F5DC;font-size:13px;font-weight:600;padding:10px 24px;border-radius:10px;border:none;cursor:pointer;transition:background .15s;"
                         onmouseover="this.style.background='#1e3d1a'" onmouseout="this.style.background='#2D5A27'">
                     Simpan
                 </button>
                 <a href="{{ route('rentals.index') }}"
-                   style="font-size:13px;font-weight:500;padding:10px 16px;border-radius:10px;color:#4B3621;text-decoration:none;background:#f0ede4;border:1px solid #d4cfc0;"
+                   style="font-size:13px;font-weight:500;padding:10px 16px;border-radius:10px;color:#4B3621;text-decoration:none;background:#f0ede4;border:1px solid #d4cfc0;transition:background .15s;"
                    onmouseover="this.style.background='#e0ddd0'" onmouseout="this.style.background='#f0ede4'">
                     Batal
                 </a>

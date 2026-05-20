@@ -16,6 +16,16 @@
     .form-input.error { border-color:#dc2626; }
     .form-error { font-size:12px; color:#dc2626; margin-top:5px; }
 
+    /* ── Menghilangkan Tanda Panah Atas-Bawah Pada Input Number ── */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+
     .upload-area {
         border:2px dashed #c8c0ac; border-radius:14px;
         background:#faf9f4; cursor:pointer;
@@ -83,11 +93,9 @@
                     </div>
                 </div>
                 <div id="preview-wrapper" style="display:none;flex-direction:column;align-items:center;gap:8px;width:100%;">
-                    <img id="image-preview" src="" alt="Preview"
-                         style="max-height:180px;max-width:100%;border-radius:10px;object-fit:contain;">
+                    <img id="image-preview" src="" alt="Preview" style="max-height:180px;max-width:100%;border-radius:10px;object-fit:contain;">
                     <p id="preview-name" style="font-size:12px;color:#2D5A27;font-weight:600;margin:0;text-align:center;"></p>
-                    <button type="button" onclick="clearImage(event)"
-                            style="font-size:12px;color:#dc2626;background:#fff0f0;border:1px solid #fecaca;border-radius:6px;padding:5px 12px;cursor:pointer;font-weight:600;">
+                    <button type="button" onclick="clearImage(event)" style="font-size:12px;color:#dc2626;background:#fff0f0;border:1px solid #fecaca;border-radius:6px;padding:5px 12px;cursor:pointer;font-weight:600;">
                         ✕ Hapus foto
                     </button>
                 </div>
@@ -97,10 +105,8 @@
         </div>
     </div>
 
-    {{-- KOLOM KANAN: Detail --}}
+    {{-- KOLOM KANAN: Detail Data Alat --}}
     <div style="display:flex;flex-direction:column;gap:16px;">
-
-        {{-- Card Header --}}
         <div style="background:#fff; border-radius:16px; border:1px solid #e0ddd0; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,0.04);">
             <div style="padding:16px 24px; border-bottom:1px solid #f0ede4; background:#faf9f4; display:flex;align-items:center;gap:10px;">
                 <div style="width:36px;height:36px;border-radius:10px;background:#e4f3e0;display:flex;align-items:center;justify-content:center;">
@@ -116,21 +122,18 @@
 
             <div style="padding:24px;display:flex;flex-direction:column;gap:18px;">
 
-                {{-- Nama --}}
+                {{-- Input Nama --}}
                 <div>
                     <label class="form-label">Nama Peralatan <span style="color:#dc2626;">*</span></label>
-                    <input type="text" name="equipment_name" value="{{ old('equipment_name') }}"
-                           placeholder="Contoh: Tenda Eiger 4P"
-                           class="form-input {{ $errors->has('equipment_name') ? 'error' : '' }}">
+                    <input type="text" name="equipment_name" value="{{ old('equipment_name') }}" placeholder="Contoh: Tenda Eiger 4P" class="form-input {{ $errors->has('equipment_name') ? 'error' : '' }}">
                     @error('equipment_name') <p class="form-error">{{ $message }}</p> @enderror
                 </div>
 
-                {{-- Kategori + Status --}}
+                {{-- Input Kategori + Status --}}
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
                     <div>
                         <label class="form-label">Kategori <span style="color:#dc2626;">*</span></label>
-                        <select name="equipment_category_id"
-                                class="form-input {{ $errors->has('equipment_category_id') ? 'error' : '' }}">
+                        <select name="equipment_category_id" class="form-input {{ $errors->has('equipment_category_id') ? 'error' : '' }}">
                             <option value="">-- Pilih Kategori --</option>
                             @foreach($categories as $cat)
                                 <option value="{{ $cat->id }}" {{ old('equipment_category_id') == $cat->id ? 'selected' : '' }}>
@@ -144,21 +147,18 @@
                         <label class="form-label">Status <span style="color:#dc2626;">*</span></label>
                         <select name="availability_status" class="form-input">
                             <option value="available" {{ old('availability_status') == 'available' ? 'selected' : '' }}>✅ Tersedia</option>
-                            <option value="rented"    {{ old('availability_status') == 'rented'    ? 'selected' : '' }}>📦 Disewa</option>
+                            <option value="rented" {{ old('availability_status') == 'rented' ? 'selected' : '' }}>📦 Disewa</option>
                             <option value="maintenance" {{ old('availability_status') == 'maintenance' ? 'selected' : '' }}>🔧 Maintenance</option>
                         </select>
                     </div>
                 </div>
 
-                {{-- Harga --}}
+                {{-- Input Harga Tanpa Panah Atas-Bawah --}}
                 <div>
                     <label class="form-label">Harga Sewa per Hari (Rp) <span style="color:#dc2626;">*</span></label>
                     <div style="position:relative;">
                         <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:13px;font-weight:600;color:#8D8474;">Rp</span>
-                        <input type="number" name="rental_price_per_day" value="{{ old('rental_price_per_day') }}"
-                               placeholder="75000" min="0"
-                               class="form-input {{ $errors->has('rental_price_per_day') ? 'error' : '' }}"
-                               style="padding-left:42px;">
+                        <input type="number" name="rental_price_per_day" value="{{ old('rental_price_per_day') }}" placeholder="75000" min="0" class="form-input {{ $errors->has('rental_price_per_day') ? 'error' : '' }}" style="padding-left:42px;">
                     </div>
                     @error('rental_price_per_day') <p class="form-error">{{ $message }}</p> @enderror
                 </div>
@@ -166,7 +166,7 @@
             </div>
         </div>
 
-        {{-- Action Buttons --}}
+        {{-- Action Submit Buttons --}}
         <div style="display:flex;align-items:center;gap:12px;justify-content:flex-end;">
             <a href="{{ route('equipment.index') }}" class="btn-ghost">
                 <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">

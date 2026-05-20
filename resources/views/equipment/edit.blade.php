@@ -15,6 +15,17 @@
     .form-input:focus { border-color:#2D5A27; box-shadow:0 0 0 3px rgba(45,90,39,0.1); }
     .form-input.error { border-color:#dc2626; }
     .form-error { font-size:12px; color:#dc2626; margin-top:5px; }
+    
+    /* ── Menghilangkan Tanda Panah Atas-Bawah Pada Input Number ── */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+
     .upload-area {
         border:2px dashed #c8c0ac; border-radius:14px;
         background:#faf9f4; cursor:pointer;
@@ -138,7 +149,7 @@
                 @endif
                 <div>
                     <h2 style="font-size:15px;font-weight:700;color:#1e3d1a;margin:0;">{{ $equipment->equipment_name }}</h2>
-                    <p style="font-size:12px;color:#8D8474;margin:2px 0 0;">{{ $equipment->category->category_name }}</p>
+                    <p style="font-size:12px;color:#8D8474;margin:2px 0 0;">{{ $equipment->category->category_name ?? '-' }}</p>
                 </div>
             </div>
 
