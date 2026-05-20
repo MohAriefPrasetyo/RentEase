@@ -81,7 +81,7 @@
 <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:24px;">
     @forelse($equipments as $item)
     <div id="card-{{ $item->id }}" 
-         onclick="toggleSelectItem({{ $item->id }}, '{{ addslashes($item->equipment_name) }}', {{ $item->rental_price_per_day }}, '{{ $item->availability_status }}', '{{ $item->image ? asset('storage/' . $item->image) : '' }}')"
+         onclick="toggleSelectItem({{ $item->id }}, '{{ addslashes($item->equipment_name) }}', {{ $item->rental_price_per_day }}, '{{ $item->availability_status }}', '{{ $item->image ? asset(&quot;storage/&quot; . $item->image) : &quot;&quot; }}')"
          style="background:#fff; border: 1px solid #d4cfc0; border-radius: 16px; overflow: hidden; cursor: pointer; transition: all .2s; position: relative; padding: 10px; box-shadow: 0 2px 8px #0000000f;">
         
         {{-- Gambar / placeholder --}}
