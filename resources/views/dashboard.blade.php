@@ -34,7 +34,7 @@
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:20px;">
         @forelse($equipments as $item)
         <div style="background:#fff;border-radius:16px;overflow:hidden;cursor:pointer;transition:transform .2s,box-shadow .2s;box-shadow:0 2px 6px rgba(0,0,0,.06);"
-             onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 12px 28px rgba(0,0,0,.14)'"
+             onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 12px 28px #2D5A27'"
              onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 2px 6px rgba(0,0,0,.06)'"
              onclick="window.location='{{ route('equipment.index') }}'">
 

@@ -37,20 +37,20 @@
                 @csrf
                 <div>
                     <label class="block text-sm font-medium mb-1.5" style="color:#4B3621;">Email</label>
-                    <input type="email" name="email" value="{{ old('email') }}" placeholder="contoh@email.com"
-                           class="w-full rounded-xl px-4 py-2.5 text-sm border outline-none transition-all"
-                           style="border-color: rgba(255, 255, 255, 0.35); background: rgba(255, 255, 255, 0.15); color: #ffffff;"
-                           onfocus="this.style.borderColor='#ffffff'; this.style.background='rgba(39, 35, 35, 0.25)';"
-                           onblur="this.style.borderColor='rgba(255, 255, 255, 0.35)'; this.style.background='rgba(255, 255, 255, 0.15)';"
+                    <input type="email" name="email" value="{{ old('email') }}" placeholder="contoh@email.com"      
+                    class="w-full rounded-xl px-4 py-2.5 text-sm border outline-none transition-all placeholder-gray-400"
+                    style="border-color:#d4cfc0; background:#edf2f7; color:#1e3d1a;"
+                    onfocus="this.style.borderColor='#2D5A27'; this.style.boxShadow='0 0 0 3px rgba(45,90,39,0.1)'"
+                    onblur="this.style.borderColor='#d4cfc0'; this.style.boxShadow='none'">
                            @error('email') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
                 <div>
                     <label class="block text-sm font-medium mb-1.5" style="color:#4B3621;">Password</label>
                     <input type="password" name="password" placeholder="••••••••"
-                           class="w-full rounded-xl px-4 py-2.5 text-sm border outline-none transition-all"
-                            style="border-color: rgba(255, 255, 255, 0.35); background: rgba(255, 255, 255, 0.15); color: #ffffff;"
-                           onfocus="this.style.borderColor='#ffffff'; this.style.background='rgba(255,255,255,0.25)';"
-                           onblur="this.style.borderColor='rgba(255, 255, 255, 0.35)'; this.style.background='rgba(255, 255, 255, 0.15)';"
+                    class="w-full rounded-xl px-4 py-2.5 text-sm border outline-none transition-all placeholder-gray-400"
+                    style="border-color:#d4cfc0; background:#edf2f7; color:#1e3d1a;"
+                    onfocus="this.style.borderColor='#2D5A27'; this.style.boxShadow='0 0 0 3px rgba(45,90,39,0.1)'"
+                    onblur="this.style.borderColor='#d4cfc0'; this.style.boxShadow='none'">
                     @error('password') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
                 <button type="submit"

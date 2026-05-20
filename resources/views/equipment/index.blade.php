@@ -97,12 +97,10 @@
 {{-- Grid kartu gaya Airbnb --}}
 <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:24px;">
     @forelse($equipments as $item)
-    <div onclick="openBooking({{ $item->id }}, '{{ addslashes($item->equipment_name) }}', '{{ $item->category->category_name }}', {{ $item->rental_price_per_day }}, '{{ $item->availability_status }}', '{{ $item->image ? asset("storage/" . $item->image) : "" }}')"
-         style="background:#fff;border-radius:16px;overflow:hidden;cursor:pointer;transition:transform .2s,box-shadow .2s;position:relative;"
-         onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 12px 32px rgba(0,0,0,.12)'"
-         onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 2px 8px rgba(0,0,0,.06)'"
-         style="box-shadow:0 2px 8px rgba(0,0,0,.06);">
-
+    <div onclick="openBooking({{ $item->id }}, '{{ addslashes($item->equipment_name) }}', '{{ $item->category->category_name }}', {{ $item->rental_price_per_day }}, '{{ $item->availability_status }}', '{{ $item->image ? asset('storage/' . $item->image) : '' }}')"
+         style="background:#fff; border: 1px solid #d4cfc0; border-radius: 16px; overflow: hidden; cursor: pointer; transition: transform .2s, box-shadow .2s; position: relative; padding: 10px; box-shadow: 0 2px 8px #0000000f;"
+         onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 12px 32px #2D5A27'"
+         onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px #0000000f'">
         {{-- Gambar / placeholder --}}
         <div style="position:relative;width:100%;aspect-ratio:4/3;background:linear-gradient(135deg,#c8dfc4 0%,#e8f0e6 100%);overflow:hidden;">
 
@@ -186,7 +184,7 @@
     </div>
     @endforelse
 </div>
-
+</div>
 @if($equipments->hasPages())
 <div style="margin-top:28px;">{{ $equipments->links() }}</div>
 @endif
