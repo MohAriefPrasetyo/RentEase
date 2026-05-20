@@ -12,31 +12,35 @@
         body { font-family: 'Inter', sans-serif; background-color: #ffffff; margin: 0; }
         [x-cloak] { display: none !important; }
 
-        /* ─── NAVBAR ─────────────────────────────────── */
+        /* ─── NAVBAR (Disesuaikan dengan Logo) ───────────────── */
         #navbar {
             position: sticky; top: 0; z-index: 50;
-            background: #ffffff;
-            border-bottom: 1px solid #e0ddd0;
+            background: #2A5A32; /* Hijau Utama dari Logo */
+            border-bottom: 1px solid #1E3F24;
             padding: 0 32px; height: 64px;
             display: flex; align-items: center; justify-content: space-between;
         }
         .navbar-brand {
-            font-weight: 700; font-size: 20px; color: #2D5A27;
+            font-weight: 700; font-size: 20px; color: #F1EDE0;
             letter-spacing: -0.3px; text-decoration: none; flex-shrink: 0;
         }
+        .navbar-brand span.brand-ease { color: #8FCE95; } /* Aksen hijau terang pada logo */
+        
         .navbar-nav { display: flex; align-items: center; gap: 4px; }
         .nav-item {
             padding: 7px 14px; border-radius: 8px; font-size: 14px;
-            font-weight: 500; color: #4a5568; text-decoration: none;
+            font-weight: 500; color: rgba(241, 237, 224, 0.8); text-decoration: none;
             transition: background .15s, color .15s; white-space: nowrap;
         }
-        .nav-item:hover  { background: #f0ede4; color: #2D5A27; }
-        .nav-item.active { background: #e8f0e6; color: #2D5A27; font-weight: 600; }
+        .nav-item:hover  { background: #1E3F24; color: #F1EDE0; }
+        .nav-item.active { background: #1E3F24; color: #F1EDE0; font-weight: 600; }
+        
         .navbar-right { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+        
         .user-badge {
             display: flex; align-items: center; gap: 8px;
             padding: 6px 12px; border-radius: 8px;
-            background: #f0ede4; border: 1px solid #d4cfc0;
+            background: #F1EDE0; border: 1px solid #E3DDD0;
             cursor: pointer; position: relative;
         }
         .dropdown-menu {
@@ -50,7 +54,7 @@
             padding: 8px 12px; border-radius: 8px; font-size: 13px;
             color: #4a5568; text-decoration: none; transition: background .15s; cursor: pointer;
         }
-        .dropdown-item:hover { background: #f0ede4; color: #2D5A27; }
+        .dropdown-item:hover { background: #F1EDE0; color: #2A5A32; }
         .dropdown-divider { border-top: 1px solid #e0ddd0; margin: 4px 0; }
 
         /* ─── HERO BANNER — full bleed, tanpa batas ───── */
@@ -60,7 +64,6 @@
             min-height: calc(100vh - 64px);
             display: flex; align-items: center;
             overflow: hidden;
-            /* TIDAK ada border-radius, margin, atau padding */
             background-image: url('../image/bg2_dashboard.jpg');
             background-size: cover;
             background-position: center bottom;
@@ -71,7 +74,6 @@
                 rgba(10,30,8,.85) 0%,
                 rgba(10,30,8,.55) 55%,
                 rgba(10,30,8,.20) 100%);
-            /* TIDAK ada border-radius */
         }
         .hero-inner {
             position: relative; z-index: 2; width: 100%;
@@ -110,7 +112,7 @@
         .hamburger { display: none; }
         .mobile-menu {
             display: none; flex-direction: column;
-            background: #faf9f4; border-bottom: 1px solid #e0ddd0;
+            background: #2A5A32; border-bottom: 1px solid #1E3F24;
             padding: 12px 20px; gap: 4px;
         }
         .mobile-menu.open { display: flex; }
@@ -125,15 +127,16 @@
                 padding: 8px; border: none; background: transparent;
                 cursor: pointer; border-radius: 8px;
             }
-            .hamburger:hover { background: #f0ede4; }
+            .hamburger:hover { background: #1E3F24; }
         }
     </style>
 </head>
 <body x-data="{ userOpen: false, mobileOpen: false }" @click.away="userOpen = false">
+
 {{-- ═══ NAVBAR ════════════════════════════════════════ --}}
 <nav id="navbar">
     <a href="{{ route('dashboard') }}" class="navbar-brand">
-        <span style="color:#4A4333;">Rent</span><span style="color:#7bc67a;">Ease</span>
+        <span>Rent</span><span class="brand-ease">Ease</span>
     </a>
 
     <div class="navbar-right">
@@ -155,18 +158,18 @@
 
         {{-- Akun --}}
         <div class="user-badge" @click.stop="userOpen = !userOpen">
-            <div style="width:28px;height:28px;border-radius:7px;background:#2D5A27;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;">
+            <div style="width:28px;height:28px;border-radius:7px;background:#2A5A32;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#F1EDE0;flex-shrink:0;">
                 {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
             </div>
-            <span style="font-size:13px;font-weight:500;color:#4B3621;">{{ auth()->user()->name }}</span>
-            <svg width="14" height="14" fill="none" stroke="#7a9e75" viewBox="0 0 24 24"
+            <span style="font-size:13px;font-weight:600;color:#2A5A32;">{{ auth()->user()->name }}</span>
+            <svg width="14" height="14" fill="none" stroke="#2A5A32" viewBox="0 0 24 24"
                  style="transition:transform .2s;" :style="userOpen ? 'transform:rotate(180deg)' : ''">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
             </svg>
 
             <div class="dropdown-menu" x-show="userOpen" x-cloak @click.stop>
                 <div style="padding:8px 12px 10px;border-bottom:1px solid #e0ddd0;margin-bottom:4px;">
-                    <div style="font-size:13px;font-weight:600;color:#1e3d1a;">{{ auth()->user()->name }}</div>
+                    <div style="font-size:13px;font-weight:600;color:#2A5A32;">{{ auth()->user()->name }}</div>
                     <div style="font-size:11px;color:#7a9e75;margin-top:2px;">{{ auth()->user()->email }}</div>
                 </div>
                 <a href="{{ route('profile.show') }}" class="dropdown-item">
@@ -190,28 +193,26 @@
 
         {{-- Hamburger (Hanya muncul di mobile) --}}
         <button class="hamburger" @click="mobileOpen = !mobileOpen">
-            <svg width="20" height="20" fill="none" stroke="#2D5A27" viewBox="0 0 24 24">
+            <svg width="20" height="20" fill="none" stroke="#F1EDE0" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
             </svg>
         </button>
     </div>
 </nav>
+
 {{-- Mobile menu --}}
 <div class="mobile-menu" x-show="mobileOpen" x-cloak :class="{ 'open': mobileOpen }">
     @foreach($navItems as $item)
         <a href="{{ route($item['route']) }}"
-           class="padding:10px 12px;border-radius:8px;font-size:14px;font-weight:500;
-                  color:{{ request()->routeIs($item['match']) ? '#2D5A27' : '#4a5568' }};
-                  background:{{ request()->routeIs($item['match']) ? '#e8f0e6' : 'transparent' }};
-                  text-decoration:none;">
+           style="padding:10px 12px; border-radius:8px; font-size:14px; font-weight:600; text-decoration:none;
+                  color:#F1EDE0;
+                  background:{{ request()->routeIs($item['match']) ? '#1E3F24' : 'transparent' }};">
             {{ $item['label'] }}
         </a>
     @endforeach
-
 </div>
 
 {{-- ═══ MAIN ════════════════════════════════════════════ --}}
-{{-- Untuk dashboard: hero full-bleed dulu (tanpa padding), lalu konten dengan padding --}}
 @if(request()->routeIs('dashboard'))
     <div class="hero-banner">
         <div class="hero-overlay"></div>
@@ -219,8 +220,7 @@
             <div class="hero-text">
                 <div class="hero-eyebrow">Selamat Datang di</div>
                 <h1>Rent<span>Ease</span></h1>
-                <p>Tempat peminjaman alat kemping aman dan terpecaya dengan menggunakan website sebagai fitur boking.<br>
-                   .</p>
+                <p>Tempat peminjaman alat kemping aman dan terpecaya dengan menggunakan website sebagai fitur boking.</p>
             </div>
             <div class="hero-logo-slot">
                 <img src="../image/logo.jpg" alt="Logo RentEase" style="width:100%;height:100%;object-fit:cover;">
