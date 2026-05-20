@@ -204,7 +204,7 @@
 <div class="mobile-menu" x-show="mobileOpen" x-cloak :class="{ 'open': mobileOpen }">
     @foreach($navItems as $item)
         <a href="{{ route($item['route']) }}"
-           style="padding:10px 12px; border-radius:8px; font-size:14px; font-weight:600; text-decoration:none;
+           class="padding:10px 12px; border-radius:8px; font-size:14px; font-weight:600; text-decoration:none;
                   color:#F1EDE0;
                   background:{{ request()->routeIs($item['match']) ? '#1E3F24' : 'transparent' }};">
             {{ $item['label'] }}
