@@ -81,7 +81,7 @@
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:24px;margin-bottom:40px;">
         @foreach($results as $item)
         <div id="card-{{ $item->id }}" 
-             onclick="toggleSelectItem( '{{ addslashes($item->equipment_name) }}', '{{ $item->availability_status }}', '{{ $item->image ? asset('storage'')"
+             onclick="toggleSelectItem({{ $item->id }}, '{{ addslashes($item->equipment_name) }}', {{ $item->rental_price_per_day }}, '{{ $item->availability_status }}', '{{ $item->image ? asset('storage/' . $item->image) : '' }}')"
              style="background:#fff; border: 1px solid #d4cfc0; border-radius: 16px; overflow: hidden; cursor: pointer; transition: all .2s; position: relative; padding: 10px; box-shadow: 0 2px 8px #0000000f;">
             
             {{-- Bagian Gambar / Box-art --}}
@@ -116,7 +116,6 @@
                 {{-- Badge Nomor Urut Antrean Kanan Atas --}}
                 <div style="position:absolute;top:12px;right:12px;">
                     <div id="badge-{{ $item->id }}" class="item-badge" style="width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.85);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#2D5A27;border:1.5px solid transparent;transition:all 0.2s;">
-                        {{-- Diisi secara dinamis dengan nomor indeks melalui javascript --}}
                     </div>
                 </div>
             </div>
@@ -170,9 +169,7 @@
     </div>
 @endif
 
-{{-- ══════════════════════════════════════════════ --}}
-{{-- FLOATING ACTION BUTTON (SEWA DI TENGAH BAWAH) --}}
-{{-- ══════════════════════════════════════════════ --}}
+{{-- FLOATING ACTION BUTTON --}}
 <div id="floatingSewaBtn" onclick="openMultiBookingModal()" 
      style="display:none; position:fixed; bottom:32px; left:50%; transform:translateX(-50%); background:#2D5A27; color:#fff; padding:16px 28px; border-radius:50px; box-shadow:0 12px 36px rgba(45,90,39,0.4); cursor:pointer; z-index:150; align-items:center; gap:12px; font-weight:700; font-size:15px; transition: background 0.2s, bottom 0.2s; animation:popInTengah 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
     <div style="position:relative; display:flex; align-items:center;">
@@ -184,18 +181,15 @@
     <span>Sewa Sekarang</span>
 </div>
 
-{{-- ══════════════════════════════════════════════ --}}
-{{-- MODAL BOOKING MULTI-ITEM                     --}}
-{{-- ══════════════════════════════════════════════ --}}
+{{-- MODAL BOOKING MULTI-ITEM --}}
 <div id="bookingOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:center;justify-content:center;backdrop-filter:blur(4px);" onclick="closeBooking(event)">
-    <div style="background:#fff;border-radius:24px;width:calc(100% - 48px);max-width:900px;max-height:90vh;overflow:hidden;box-shadow:0 32px 80px rgba(0,0,0,.25);animation:slideUp .25s ease;display:flex;">
+    <div style="background:#fff;border-radius:24px;width:calc(100% - 48px);max-width:900px;max-height:90vh;overflow:hidden;box-shadow:0 32px 80px rgba(0,0,0,.25);animation:slideUp .25s ease;display:flex;" onclick="event.stopPropagation()">
 
-        {{-- ── Kolom Kiri: Ringkasan Daftar Barang Terpilih ── --}}
+        {{-- Kolom Kiri: Ringkasan Daftar Barang Terpilih --}}
         <div style="width:45%;background:#1e3d1a;display:flex;flex-direction:column;padding:32px;box-sizing:border-box;color:#fff;">
             <p style="font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#7bc67a;margin:0 0 4px;">Daftar Sewa</p>
             <h3 style="font-size:22px;font-weight:800;margin:0 0 16px;line-height:1.2;">Multi-Item Rental</h3>
             
-            {{-- Wrapper List Item dinamis --}}
             <div id="modalSelectedItemsList" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:12px;margin-bottom:20px;padding-right:4px;"></div>
 
             <div style="border-top:1.5px dashed rgba(255,255,255,0.15);padding-top:16px;">
@@ -206,14 +200,14 @@
             </div>
         </div>
 
-        {{-- ── Kolom Kanan: Form Booking ── --}}
+        {{-- Kolom Kanan: Form Booking --}}
         <div style="flex:1;display:flex;flex-direction:column;overflow-y:auto;">
             <div style="padding:24px 28px 0;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #f0ede4;padding-bottom:20px;">
                 <div>
                     <p style="font-size:16px;font-weight:800;color:#1e3d1a;margin:0;">Form Pemesanan</p>
                     <p style="font-size:12px;color:#7a9e75;margin:4px 0 0;">Isi data di bawah ini untuk memproses sewa massal</p>
                 </div>
-                <button onclick="closeBooking()" style="background:#f0ede4;border:none;border-radius:10px;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+                <button onclick="closeBooking(null)" style="background:#f0ede4;border:none;border-radius:10px;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;">
                     <svg width="16" height="16" fill="none" stroke="#4B3621" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
@@ -222,18 +216,17 @@
 
             <form action="{{ route('rentals.store') }}" method="POST" style="padding:24px 28px;display:flex;flex-direction:column;gap:16px;flex:1;">
                 @csrf
-                {{-- Input Hidden Penampung IDs Alat untuk Controller --}}
                 <div id="hiddenIdContainer"></div>
 
                 <div>
                     <label style="display:block;font-size:12px;font-weight:600;color:#4B3621;margin-bottom:6px;">Nama Penyewa</label>
-                    <input type="text" name="renter_name" value="{{ auth()->user()->name }}" required style="width:100%;border:1.5px solid #d4cfc0;border-radius:10px;padding:10px 14px;font-size:13px;color:#1e3d1a;outline:none;box-sizing:border-box;">
+                    <input type="text" name="renter_name" value="{{ auth()->check() ? auth()->user()->name : '' }}" required style="width:100%;border:1.5px solid #d4cfc0;border-radius:10px;padding:10px 14px;font-size:13px;color:#1e3d1a;outline:none;box-box-sizing:border-box;">
                 </div>
 
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
                     <div>
                         <label style="display:block;font-size:12px;font-weight:600;color:#4B3621;margin-bottom:6px;">Tanggal Sewa</label>
-                        <input type="date" name="rental_date" required id="rentalDate" style="width:100%;border:1.5px solid #d4cfc0;border-radius:10px;padding:10px 14px;font-size:13px;color:#1e3d1a;outline:none;" oninput="calcTotal()">
+                        <input type="date" name="rental_date" required id="rentalDate" style="width:100%;border:1.5px solid #d4cfc0;border-radius:10px;padding:10px 14px;font-size:13px;color:#1e3d1a;outline:none;" oninput="updateReturnDateMin(); calcTotal();">
                     </div>
                     <div>
                         <label style="display:block;font-size:12px;font-weight:600;color:#4B3621;margin-bottom:6px;">Tanggal Kembali</label>
@@ -246,7 +239,6 @@
                     <input type="text" name="guarantee" placeholder="Contoh: KTP, SIM, Kartu Mahasiswa" required style="width:100%;border:1.5px solid #d4cfc0;border-radius:10px;padding:10px 14px;font-size:13px;color:#1e3d1a;outline:none;">
                 </div>
 
-                {{-- Estimasi Total Ringkasan Akumulasi --}}
                 <div id="totalBox" style="display:none;background:#f0f7ee;border:1.5px solid #c5dfc0;border-radius:12px;padding:16px;">
                     <p style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#7a9e75;margin:0 0 4px;">Estimasi Total Pembayaran</p>
                     <p id="totalAmount" style="font-size:24px;font-weight:800;color:#2D5A27;margin:0;"></p>
@@ -255,7 +247,7 @@
 
                 <div style="display:flex;gap:10px;margin-top:auto;padding-top:8px;">
                     <button type="submit" style="flex:1;padding:13px;border-radius:12px;background:#2D5A27;color:#fff;font-size:14px;font-weight:700;border:none;cursor:pointer;">✓ Konfirmasi Booking</button>
-                    <button type="button" onclick="closeBooking()" style="padding:13px 20px;border-radius:12px;background:#f0ede4;color:#4B3621;font-size:14px;font-weight:600;border:1px solid #d4cfc0;cursor:pointer;">Batal</button>
+                    <button type="button" onclick="closeBooking(null)" style="padding:13px 20px;border-radius:12px;background:#f0ede4;color:#4B3621;font-size:14px;font-weight:600;border:1px solid #d4cfc0;cursor:pointer;">Batal</button>
                 </div>
             </form>
         </div>
@@ -277,6 +269,11 @@
     transform: translateY(-4px); 
     box-shadow: 0 10px 24px rgba(45,90,39,0.15) !important; 
 }
+input[type="date"]::-webkit-inner-spin-button,
+input[type="date"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
 </style>
 
 <script>
@@ -292,7 +289,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// Handler seleksi kartu barang
+function updateReturnDateMin() {
+    const rDate = document.getElementById('rentalDate').value;
+    const bDate = document.getElementById('returnDate');
+    if (rDate) {
+        bDate.min = rDate;
+    }
+}
+
 function toggleSelectItem(id, name, price, status, image) {
     if (status !== 'available') {
         alert('Peralatan ini sedang tidak tersedia untuk disewa.');
@@ -312,7 +316,6 @@ function toggleSelectItem(id, name, price, status, image) {
     updateBadgesAndFloatingButton();
 }
 
-// Sinkronisasi angka badge urutan & trigger floating action button di tengah bawah
 function updateBadgesAndFloatingButton() {
     document.querySelectorAll('.item-badge').forEach(badge => {
         badge.textContent = '';
@@ -342,7 +345,6 @@ function updateBadgesAndFloatingButton() {
     }
 }
 
-// Olah data array belanjaan untuk dimasukkan ke dalam modal
 function openMultiBookingModal() {
     if (selectedItems.length === 0) return;
 
@@ -372,48 +374,53 @@ function openMultiBookingModal() {
 
         itemRow.innerHTML = `
             ${imgHtml}
-            <div style="flex:1;min-width:0;">
-                <p style="font-size:13px;font-weight:700;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${item.name}</p>
-                <p style="font-size:11px;color:#7bc67a;margin:2px 0 0;">Rp ${item.price.toLocaleString('id-ID')} / hari</p>
+            <div style="flex:1;overflow:hidden;">
+                <div style="font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${item.name}</div>
+                <div style="font-size:11px;color:rgba(255,255,255,0.6)">Rp ${item.price.toLocaleString('id-ID')}/hari</div>
             </div>
         `;
         listContainer.appendChild(itemRow);
     });
 
-    document.getElementById('modalSummaryBasePrice').textContent = 'Rp ' + totalAccumulatedPricePerDay.toLocaleString('id-ID') + ' / hari';
-    
-    document.getElementById('rentalDate').value = '';
-    document.getElementById('returnDate').value = '';
-    document.getElementById('totalBox').style.display = 'none';
-
+    document.getElementById('modalSummaryBasePrice').textContent = `Rp ${totalAccumulatedPricePerDay.toLocaleString('id-ID')}/hari`;
     document.getElementById('bookingOverlay').style.display = 'flex';
-    document.body.style.overflow = 'hidden';
+    calcTotal();
 }
 
-function closeBooking(e) {
-    if (e && e.target !== document.getElementById('bookingOverlay')) return;
-    document.getElementById('bookingOverlay').style.display = 'none';
-    document.body.style.overflow = '';
+function closeBooking(event) {
+    if(!event || event.target === document.getElementById('bookingOverlay')) {
+        document.getElementById('bookingOverlay').style.display = 'none';
+    }
 }
 
-// Hitung total akumulasi harga sewa dikali durasi hari
 function calcTotal() {
-    const start = new Date(document.getElementById('rentalDate').value);
-    const end   = new Date(document.getElementById('returnDate').value);
+    const rDateValue = document.getElementById('rentalDate').value;
+    const bDateValue = document.getElementById('returnDate').value;
+    const totalBox = document.getElementById('totalBox');
     
-    if (!start || !end || end <= start) { 
-        document.getElementById('totalBox').style.display = 'none'; 
-        return; 
+    if (!rDateValue || !bDateValue) {
+        totalBox.style.display = 'none';
+        return;
     }
 
-    const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
-    let totalPricePerDay = selectedItems.reduce((sum, item) => sum + item.price, 0);
-    const totalGrand = days * totalPricePerDay;
+    const rDate = new Date(rDateValue);
+    const bDate = new Date(bDateValue);
+    
+    const timeDiff = bDate.getTime() - rDate.getTime();
+    let days = Math.ceil(timeDiff / (1000 * 3600 * 24));
+    
+    if(days <= 0) days = 1; // Minimal sewa 1 hari jika tanggal sama
 
-    document.getElementById('totalDays').textContent  = `${days} hari × Rp ${totalPricePerDay.toLocaleString('id-ID')} (Total Kompilasi)`;
-    document.getElementById('totalAmount').textContent = 'Rp ' + totalGrand.toLocaleString('id-ID');
-    document.getElementById('totalBox').style.display  = 'block';
+    let pricePerDay = 0;
+    selectedItems.forEach(item => {
+        pricePerDay += item.price;
+    });
+
+    const grandTotal = pricePerDay * days;
+
+    document.getElementById('totalAmount').textContent = `Rp ${grandTotal.toLocaleString('id-ID')}`;
+    document.getElementById('totalDays').textContent = `Dihitung untuk ${days} hari sewa`;
+    totalBox.style.display = 'block';
 }
 </script>
-
 @endsection
