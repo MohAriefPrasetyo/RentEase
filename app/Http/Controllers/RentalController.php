@@ -12,7 +12,12 @@ class RentalController extends Controller
 {
     public function index()
     {
-        return redirect()->route('equipment.index', ['tab' => 'rental']);
+        return view('rentals.index', [
+            'equipments'         => Equipment::with('category')->latest()->paginate(12),
+            'totalEquipment'     => Equipment::count(),
+            'availableEquipment' => Equipment::where('availability_status', 'available')->count(),
+            'totalRentals'       => Rental::count(),
+        ]);
     }
 
     public function create()
@@ -57,7 +62,6 @@ class RentalController extends Controller
                 'equipment_id' => $eq->id,
                 'subtotal'     => $eq->rental_price_per_day * $days,
             ]);
-            $eq->update(['availability_status' => 'rented']);
         }
 
         // Otomatis buat record denda dengan nominal = total harga rental
