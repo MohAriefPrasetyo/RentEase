@@ -73,8 +73,10 @@
     @forelse($equipments as $item)
     <div id="card-{{ $item->id }}" 
          onclick="toggleSelectItem({{ $item->id }}, '{{ addslashes($item->equipment_name) }}', {{ $item->rental_price_per_day }}, '{{ $item->availability_status }}', '{{ $item->image ? asset('storage/' . $item->image) : '' }}')"
-         style="background:#fff; border: 1px solid #d4cfc0; border-radius: 16px; overflow: hidden; cursor: pointer; transition: all .2s; position: relative; padding: 10px; box-shadow: 0 2px 8px #0000000f;">
-        
+         style="background:#fff; border: 1px solid #d4cfc0; border-radius: 16px; overflow: hidden; cursor: pointer; transition: all .2s; position: relative; padding: 10px; box-shadow: 0 2px 8px #0000000f;"
+        style="background:#fff;border-radius:16px;overflow:hidden;cursor:pointer;transition:transform .2s,box-shadow .2s;box-shadow:0 2px 6px rgba(0,0,0,.06);"
+             onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 12px 28px #2D5A27'"
+             onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 2px 6px rgba(0,0,0,.06)'">
         {{-- Gambar / placeholder --}}
         <div style="position:relative;width:100%;aspect-ratio:4/3;background:linear-gradient(135deg,#c8dfc4 0%,#e8f0e6 100%);overflow:hidden;border-radius:12px;">
             <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
