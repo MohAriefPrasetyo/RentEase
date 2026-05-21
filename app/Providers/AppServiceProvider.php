@@ -21,25 +21,27 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Gate untuk melihat equipment (Admin dan Customer)
+        // Admin dan Customer bisa melihat data
         Gate::define('view-data', function (User $user) {
             return $user->role === 'admin' || $user->role === 'customer';
         });
 
-        // Gate untuk menambah/edit/hapus data (Hanya Admin)
+        // Hanya Admin yang bisa menambah data
         Gate::define('store-data', function (User $user) {
             return $user->role === 'admin';
         });
 
+        // Hanya Admin yang bisa mengedit data
         Gate::define('edit-data', function (User $user) {
             return $user->role === 'admin';
         });
 
+        // Hanya Admin yang bisa menghapus data
         Gate::define('destroy-data', function (User $user) {
             return $user->role === 'admin';
         });
 
-        // Gate untuk booking rental (Admin dan Customer)
+        // Admin dan Customer bisa membuat rental
         Gate::define('create-rental', function (User $user) {
             return $user->role === 'admin' || $user->role === 'customer';
         });

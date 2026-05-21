@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Penalty;
 use App\Models\Rental;
 use App\Models\RentalItem;
 use App\Models\Equipment;
@@ -12,11 +11,19 @@ class RentalController extends Controller
 {
     public function index()
     {
+        $user = auth()->user();
+
+        if ($user->role === 'admin') {
+            return view('rentals.index-admin', [
+                'rentals' => Rental::with(['user', 'items.equipment'])->latest()->paginate(10),
+            ]);
+        }
+
         return view('rentals.index', [
             'equipments'         => Equipment::with('category')->latest()->paginate(12),
             'totalEquipment'     => Equipment::count(),
             'availableEquipment' => Equipment::where('availability_status', 'available')->count(),
-            'totalRentals'       => Rental::count(),
+            'totalRentals'       => Rental::where('user_id', $user->id)->count(),
         ]);
     }
 
@@ -63,13 +70,6 @@ class RentalController extends Controller
                 'subtotal'     => $eq->rental_price_per_day * $days,
             ]);
         }
-
-        // Otomatis buat record denda dengan nominal = total harga rental
-        Penalty::create([
-            'rental_id'          => $rental->id,
-            'damage_description' => null,
-            'penalty_fee'        => $totalPrice,
-        ]);
 
         return redirect()->route('rentals.show', $rental)->with('success', 'Rental berhasil dibuat.');
     }

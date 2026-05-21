@@ -11,28 +11,34 @@ class PenaltyController extends Controller
     public function index()
     {
         $this->authorize('view-data');
-        $user = auth()->user();
+        $user    = auth()->user();
+        $isAdmin = $user->role === 'admin';
 
-        // Total barang yang sedang/pernah disewa oleh user ini
-        $myRentals = $user->role === 'admin'
-            ? \App\Models\Rental::with('items')->get()
-            : \App\Models\Rental::with('items')->where('user_id', $user->id)->get();
-
-        $totalMyItems   = $myRentals->sum(fn($r) => $r->items->count());
-        $totalMyRentals = $myRentals->count();
-        $totalPenalties = $user->role === 'admin'
-            ? Penalty::sum('penalty_fee')
-            : Penalty::whereHas('rental', fn($q) => $q->where('user_id', $user->id))->sum('penalty_fee');
-        $totalPenaltyCount = $user->role === 'admin'
-            ? Penalty::count()
-            : Penalty::whereHas('rental', fn($q) => $q->where('user_id', $user->id))->count();
+        if ($isAdmin) {
+            $rentals   = Rental::with('items')->get();
+            $penalties = Penalty::with(['rental.items.equipment', 'rental.user'])->latest()->paginate(10);
+            $totalPenalties    = Penalty::sum('penalty_fee');
+            $totalPenaltyCount = Penalty::count();
+        } else {
+            $rentals   = Rental::with('items')->where('user_id', $user->id)->get();
+            $penalties = Penalty::with(['rental.items.equipment', 'rental.user'])
+                            ->whereHas('rental', function ($q) use ($user) {
+                                $q->where('user_id', $user->id);
+                            })->latest()->paginate(10);
+            $totalPenalties    = Penalty::whereHas('rental', function ($q) use ($user) {
+                                    $q->where('user_id', $user->id);
+                                })->sum('penalty_fee');
+            $totalPenaltyCount = Penalty::whereHas('rental', function ($q) use ($user) {
+                                    $q->where('user_id', $user->id);
+                                })->count();
+        }
 
         return view('penalties.index', [
-            'penalties'        => Penalty::with(['rental.items.equipment', 'rental.user'])->latest()->paginate(10),
-            'totalMyItems'     => $totalMyItems,
-            'totalMyRentals'   => $totalMyRentals,
-            'totalPenalties'   => $totalPenalties,
-            'totalPenaltyCount'=> $totalPenaltyCount,
+            'penalties'         => $penalties,
+            'totalMyRentals'    => $rentals->count(),
+            'totalMyItems'      => $rentals->sum(fn($r) => $r->items->count()),
+            'totalPenalties'    => $totalPenalties,
+            'totalPenaltyCount' => $totalPenaltyCount,
         ]);
     }
 
