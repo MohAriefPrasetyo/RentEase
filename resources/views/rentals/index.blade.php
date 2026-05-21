@@ -134,9 +134,7 @@
 <div style="margin-top:28px;">{{ $equipments->links() }}</div>
 @endif
 
-{{-- ══════════════════════════════════════════════ --}}
 {{-- FLOATING ACTION BUTTON (SEWA DI TENGAH BAWAH) --}}
-{{-- ══════════════════════════════════════════════ --}}
 <div id="floatingSewaBtn" onclick="openMultiBookingModal()" 
      style="display:none; position:fixed; bottom:32px; left:50%; transform:translateX(-50%); background:#2D5A27; color:#fff; padding:16px 28px; border-radius:50px; box-shadow:0 12px 36px rgba(45,90,39,0.4); cursor:pointer; z-index:150; align-items:center; gap:12px; font-weight:700; font-size:15px; transition: background 0.2s, bottom 0.2s; animation:popInTengah 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
     <div style="position:relative; display:flex; align-items:center;">
@@ -148,9 +146,7 @@
     <span>Sewa Sekarang</span>
 </div>
 
-{{-- ══════════════════════════════════════════════ --}}
 {{-- MODAL BOOKING MULTI-ITEM                     --}}
-{{-- ══════════════════════════════════════════════ --}}
 <div id="bookingOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:center;justify-content:center;backdrop-filter:blur(4px);" onclick="closeBooking(event)">
     <div style="background:#fff;border-radius:24px;width:calc(100% - 48px);max-width:900px;max-height:90vh;overflow:hidden;box-shadow:0 32px 80px rgba(0,0,0,.25);animation:slideUp .25s ease;display:flex;">
 
