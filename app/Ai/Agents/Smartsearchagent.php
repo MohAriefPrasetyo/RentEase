@@ -3,15 +3,12 @@
 namespace App\AI\Agents;
 
 use App\Models\Equipment;
-use Laravel\AI\Agents; // <-- Ini base class yang benar
-use Laravel\AI\Concerns\HasTextResponses;
+use Illuminate\Support\Facades\Http;
 
-class SmartSearchAgent extends Agents // <-- Diubah meng-extends Agent
+class SmartSearchAgent
 {
-    use HasTextResponses;
-
     /**
-     * Provider yang digunakan (dari config/ai.php)
+     * Provider yang digunakan
      */
     protected string $provider = 'anthropic';
 
@@ -23,27 +20,52 @@ class SmartSearchAgent extends Agents // <-- Diubah meng-extends Agent
     /**
      * Instruksi sistem untuk agent ini
      */
-    public function instructions(): string
+    protected function instructions(): string
     {
         return <<<INSTRUCTIONS
-Kamu adalah asisten pencarian peralatan rental bernama RentEase.
-Tugasmu adalah membantu pengguna menemukan peralatan yang paling sesuai 
-dengan kebutuhan mereka berdasarkan deskripsi bebas yang mereka berikan.
+        Kamu adalah asisten pencarian peralatan rental bernama RentEase.
+        Tugasmu adalah membantu pengguna menemukan peralatan yang paling sesuai 
+        dengan kebutuhan mereka berdasarkan deskripsi bebas yang mereka berikan.
 
-Analisis kebutuhan pengguna dengan cermat:
-- Jenis peralatan yang dicari
-- Budget atau rentang harga
-- Jumlah orang / kapasitas
-- Kondisi atau kegunaan spesifik
+        Analisis kebutuhan pengguna dengan cermat:
+        - Jenis peralatan yang dicari
+        - Budget atau rentang harga
+        - Jumlah orang / kapasitas
+        - Kondisi atau kegunaan spesifik
 
-Balas HANYA dalam format JSON, tanpa teks lain:
-{
-  "matched_ids": [1, 2, 3],
-  "message": "Pesan penjelasan singkat dalam Bahasa Indonesia (1-2 kalimat)."
-}
+        Balas HANYA dalam format JSON, tanpa teks lain:
+        {
+          "matched_ids": [1, 2, 3],
+          "message": "Pesan penjelasan singkat dalam Bahasa Indonesia (1-2 kalimat)."
+        }
 
-Jika tidak ada yang cocok, kembalikan matched_ids sebagai [] dan jelaskan dalam message.
-INSTRUCTIONS;
+        Jika tidak ada yang cocok, kembalikan matched_ids sebagai [] dan jelaskan dalam message.
+        INSTRUCTIONS;
+    }
+
+    /**
+     * Kirim prompt ke Anthropic dan dapatkan teks respons
+     */
+    protected function text(string $prompt): string
+    {
+        $response = Http::withHeaders([
+            'x-api-key'         => config('services.anthropic.api_key'),
+            'anthropic-version' => '2023-06-01',
+            'Content-Type'      => 'application/json',
+        ])->post('https://api.anthropic.com/v1/messages', [
+            'model'      => $this->model,
+            'max_tokens' => 1024,
+            'system'     => $this->instructions(),
+            'messages'   => [
+                ['role' => 'user', 'content' => $prompt],
+            ],
+        ]);
+
+        if ($response->failed()) {
+            throw new \RuntimeException('Anthropic API error: ' . $response->body());
+        }
+
+        return $response->json('content.0.text', '');
     }
 
     /**
@@ -64,22 +86,21 @@ INSTRUCTIONS;
         ])->toJson(JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
 
         $prompt = <<<PROMPT
-Berikut daftar semua peralatan yang tersedia di sistem:
+        Berikut daftar semua peralatan yang tersedia di sistem:
 
-{$equipmentList}
+        {$equipmentList}
 
-Pengguna mencari: "{$query}"
+        Pengguna mencari: "{$query}"
 
-Pilih peralatan yang paling relevan dan kembalikan hasilnya.
-PROMPT;
+        Pilih peralatan yang paling relevan dan kembalikan hasilnya.
+        PROMPT;
 
-        // Memanggil teks generasi dari package AI
+        // Memanggil teks generasi dari Anthropic API
         $raw = $this->text($prompt);
 
         // Bersihkan markdown code block jika ada
         $clean = preg_replace('/^```json\s*/i', '', trim($raw));
-        $clean = preg_replace('/\s*
-```$/', '', $clean);
+        $clean = preg_replace('/\s*```$/', '', $clean);
 
         $parsed = json_decode($clean, true);
 
